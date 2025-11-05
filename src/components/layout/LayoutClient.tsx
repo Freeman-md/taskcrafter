@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import {
@@ -11,23 +11,23 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function LayoutClient({
-    children
-} : {
-    children: React.ReactNode
+  children,
+}: {
+  children: React.ReactNode;
 }) {
   return (
     <ClerkProvider>
       <header>
         <SignedOut>
-        <SignInButton />
-        <SignUpButton>
-          <Button>Sign up</Button>
-        </SignUpButton>
-      </SignedOut>
+          <SignInButton />
+          <SignUpButton>
+            <Button>Sign up</Button>
+          </SignUpButton>
+        </SignedOut>
 
-      <SignedIn>
-        <Link href={"/"}>Dashboard</Link>
-      </SignedIn>
+        <SignedIn>
+          <Link href={"/"}>Dashboard</Link>
+        </SignedIn>
       </header>
 
       {children}
