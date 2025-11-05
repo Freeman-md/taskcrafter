@@ -1,0 +1,77 @@
+// 🏁 PHASE 1 – PROJECT SETUP
+// TODO: Add TailwindCSS + configure base styles
+// TODO: Create .env.local with placeholder keys
+// TODO: Install dependencies → openai, zod, @supabase/supabase-js, next-auth, prisma, bcrypt
+// TODO: Initialize Git + Prettier + ESLint
+// TODO: Add README.md explaining purpose and tech stack
+
+
+// ⚙️ PHASE 2 – BACKEND & SCHEMAS
+// TODO: Define Zod schemas (GoalInput, TaskOutput) in /lib/schemas.ts
+// TODO: Create /app/api/plan/route.ts
+// TODO: Validate incoming input with Zod
+// TODO: Call OpenAI Responses API using function calling
+// TODO: Strictly validate returned JSON with Zod
+// TODO: Return valid structured JSON or error
+// TODO: Log prompt + response for debugging
+
+
+// 🧩 PHASE 3 – FUNCTION CALLING HELPER
+// TODO: Create /lib/ai/createPlan.ts
+// TODO: Wrap OpenAI call and schema validation in one function
+// TODO: Retry once if model returns invalid JSON
+// TODO: Export createPlan(goalInput) for API use
+// TODO: Test locally with sample goal
+
+
+// 💾 PHASE 4 – DATABASE INTEGRATION
+// TODO: Initialize Prisma + Supabase (PostgreSQL)
+// TODO: Add schema models (User, Goal, Task)
+// TODO: Run npx prisma migrate dev
+// TODO: Add Prisma client in /lib/prisma.ts
+// TODO: Integrate NextAuth (email / GitHub login)
+// TODO: Protect /api/plan with session check
+// TODO: Implement DB functions → savePlan(userId, goal, tasks) + getUserGoals(userId)
+
+
+// 🧑‍💻 PHASE 5 – FRONTEND IMPLEMENTATION
+// TODO: Create layout (/app/layout.tsx) + navigation bar
+// TODO: Build “Create Goal” page (/app/plan/page.tsx) → input form + submit button + loading state
+// TODO: Create “Plan Results” component → render structured steps as cards/table
+// TODO: Add “Save Plan” button → /api/save
+// TODO: Add toast notifications (success/error)
+// TODO: Add dark/light mode (optional)
+
+
+// 🔒 PHASE 6 – SECURITY & STABILITY
+// TODO: Add middleware to protect API routes
+// TODO: Implement rate limit (5 requests/hour per user)
+// TODO: Sanitize all inputs (Zod validation)
+// TODO: Keep API keys server-only
+// TODO: Add error boundary components
+
+
+// 🌍 PHASE 7 – DEPLOYMENT
+// TODO: Deploy Next.js app to Vercel
+// TODO: Connect Supabase project (URL + keys)
+// TODO: Add all env vars to Vercel
+// TODO: Test auth + plan generation flow
+// TODO: Fix any CORS or token issues
+// TODO: Create demo user and sample goal
+
+
+// 🎨 PHASE 8 – UI POLISH + PUBLIC DEMO
+// TODO: Create landing page (/app/page.tsx) with intro and “Try Demo” button
+// TODO: Limit demo to 1 AI request (no auth needed)
+// TODO: Add code block or JSON viewer for structured output
+// TODO: Include credit text + footer
+// TODO: Test responsive layout
+// TODO: Share public demo link
+
+
+// 🧾 OPTIONAL ENHANCEMENTS
+// TODO: Export plan as Markdown or JSON file
+// TODO: Add “Edit Task” modal to update titles/descriptions
+// TODO: Display progress tracking bar (per goal)
+// TODO: Add token usage counter per user
+// TODO: Analytics dashboard with charts (Prisma + Chart.js)
