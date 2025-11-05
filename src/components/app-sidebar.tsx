@@ -1,20 +1,15 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
-  IconDashboard,
-  IconListDetails,
   IconSettings,
-  IconActivity,
-  IconCode,
-  IconSpiral,
   IconLogout,
   IconWriting,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -23,37 +18,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { useUser } from "@clerk/nextjs"
+} from "@/components/ui/sidebar";
+import { useUser } from "@clerk/nextjs";
 
 const data = {
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: IconDashboard,
-    },
-    {
-      title: "Goal Planner",
-      url: "#",
-      icon: IconSpiral,
-    },
-    {
-      title: "Plan Details",
-      url: "#",
-      icon: IconListDetails,
-    },
-    {
-      title: "JSON Viewer",
-      url: "#",
-      icon: IconCode,
-    },
-    {
-      title: "Activity & Logs",
-      url: "#",
-      icon: IconActivity,
-    },
-  ],
   navSecondary: [
     {
       title: "Settings",
@@ -68,16 +36,16 @@ const data = {
       icon: IconLogout,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useUser()
+  const { user } = useUser();
 
   const navUser = {
-    name: user?.fullName ?? 'N/A',
-    email: user?.emailAddresses[0].emailAddress ?? 'N/A',
-    avatar: user?.imageUrl ?? "/avatars/shadcn.jpg"
-  }
+    name: user?.fullName ?? "N/A",
+    email: user?.emailAddresses[0].emailAddress ?? "N/A",
+    avatar: user?.imageUrl ?? "/avatars/shadcn.jpg",
+  };
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -97,12 +65,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={navUser} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
