@@ -29,8 +29,8 @@ export default function GoalPlanner() {
   }, []);
 
   return (
-    <div className="flex flex-1 flex-col gap-4 py-4 md:gap-6 md:py-6">
-      <div className="@container/goal-planner grid grid-cols-1 gap-4 px-4 md:gap-6 md:px-6 @[900px]/goal-planner:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+    <div className="@container/goal-planner flex flex-1 flex-col gap-4 py-4 md:gap-6 md:py-6">
+      <div className="grid grid-cols-1 gap-4 px-4 md:gap-6 md:px-6 @[800px]/goal-planner:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <GoalForm isLoading={isGenerating} onGenerate={handleGenerate} onClear={handleClear} />
         <PlanView
           isLoading={isGenerating}

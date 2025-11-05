@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Source_Sans_3, Saira } from "next/font/google";
 import "./globals.css";
-import LayoutClient from "../components/layout/LayoutClient";
+import { AppProviders } from "@/components/providers/app-providers";
 
 const sourceSans = Source_Sans_3({
   variable: "--font-source-sans",
@@ -24,13 +24,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <html lang="en">
+    <html lang="en">
       <body
         className={`${sourceSans.className} ${saira.variable} antialiased`}
       >
-        <LayoutClient>
-          { children }
-        </LayoutClient>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );
