@@ -3,7 +3,6 @@
 import * as React from "react"
 import {
   IconDashboard,
-  IconInnerShadowTop,
   IconListDetails,
   IconSettings,
   IconActivity,
@@ -25,13 +24,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useUser } from "@clerk/nextjs"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Dashboard",
@@ -62,11 +57,13 @@ const data = {
   navSecondary: [
     {
       title: "Settings",
+      key: "settings",
       url: "#",
       icon: IconSettings,
     },
     {
       title: "Logout",
+      key: "logout",
       url: "#",
       icon: IconLogout,
     },
@@ -74,6 +71,14 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useUser()
+
+  const navUser = {
+    name: user?.fullName ?? 'N/A',
+    email: user?.emailAddresses[0].emailAddress ?? 'N/A',
+    avatar: user?.imageUrl ?? "/avatars/shadcn.jpg"
+  }
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -96,7 +101,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={navUser} />
       </SidebarFooter>
     </Sidebar>
   )
