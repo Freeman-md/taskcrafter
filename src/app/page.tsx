@@ -31,7 +31,6 @@ export default function Page() {
               <SectionCards />
               <ActiveGoals />
               <RecentActivity />
-              <DataTable data={data} />
             </div>
           </div>
         </div>

@@ -13,6 +13,7 @@ import {
 import { Progress } from "@/components/ui/progress"
 import { Goal } from "@/types/goal"
 
+
 interface GoalCardProps {
   goal: Goal
 }
