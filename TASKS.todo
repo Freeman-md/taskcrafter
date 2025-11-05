@@ -1,8 +1,6 @@
 // 🏁 PHASE 1 – PROJECT SETUP
 // TODO: Add TailwindCSS + configure base styles
-// TODO: Create .env.local with placeholder keys
 // TODO: Install dependencies → openai, zod, @supabase/supabase-js, next-auth, prisma, bcrypt
-// TODO: Initialize Git + Prettier + ESLint
 // TODO: Add README.md explaining purpose and tech stack
 
 
