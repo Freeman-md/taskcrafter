@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:create-plan": "node scripts/test-create-plan.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.34.3",

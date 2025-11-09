@@ -36,6 +36,29 @@ npm run dev
 
 Visit `http://localhost:3000` and Clerk’s dev instance for authentication flows.
 
+### Quick API Testing
+
+Use the included smoke-test runner to exercise the create-plan route without leaving VS Code (integrated terminal works great):
+
+```bash
+# terminal 1 – run the app
+npm run dev
+
+# terminal 2 – hit the API with multiple scenarios
+npm run test:create-plan
+```
+
+The script (see `scripts/test-create-plan.mjs`) sends five POST requests:
+- `happy-path`: fully valid payload to confirm success responses.
+- `edge-min-context`: validates the 20-character context boundary.
+- `missing-title`: omits a required field and should return `400`.
+- `bad-deadline`: uses an unparseable deadline string to trigger date validation errors.
+- `short-context`: exercises the minimum-length guardrail.
+
+Failed cases respond with `400` plus an `issues` array detailing the exact field and message, which the script prints to the terminal for quick debugging.
+
+Set `CREATE_PLAN_URL` before running the script to point at a different environment (e.g., a deployed preview).
+
 ### Project Structure
 
 ```
