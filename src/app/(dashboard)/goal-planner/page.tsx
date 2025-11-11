@@ -1,38 +1,25 @@
-import { IconListCheck } from "@tabler/icons-react";
-
 import { GoalForm } from "@/components/goal-planner/goal-form";
+import { PlanStatus } from "@/components/goal-planner/plan-status";
+import { GoalPlannerProvider } from "@/components/providers/goal-planner-provider";
 
 export default function GoalPlanner() {
   return (
-    <div className="@container/goal-planner flex flex-1 flex-col gap-4 py-4 md:gap-6 md:py-6">
-      <div className="grid grid-cols-1 gap-4 px-4 md:gap-6 md:px-6 @[800px]/goal-planner:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <GoalForm />
-        <div className="flex flex-col gap-4">
-          <PlanPlaceholder />
-          <div className="space-y-3">
-            <TaskCard />
-            <TaskCard />
-            <TaskCard />
+    <GoalPlannerProvider>
+      <div className="@container/goal-planner flex flex-1 flex-col gap-4 py-4 md:gap-6 md:py-6">
+        <div className="grid grid-cols-1 gap-4 px-4 md:gap-6 md:px-6 @[800px]/goal-planner:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <GoalForm />
+          <div className="flex flex-col gap-4">
+            <PlanStatus />
+            <div className="space-y-3">
+              <TaskCard />
+              <TaskCard />
+              <TaskCard />
+            </div>
           </div>
         </div>
       </div>
-      </div>
+    </GoalPlannerProvider>
   )
-}
-
-
-function PlanPlaceholder() {
-  return (
-    <div className="rounded-2xl border border-dashed border-border/80 bg-muted/20 p-6 shadow-sm">
-      <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-        <IconListCheck className="size-5 text-primary" />
-        Plan preview will appear here.
-      </div>
-      <p className="mt-2 text-sm text-muted-foreground/80">
-        This area will display the generated plan once the new data flow is implemented.
-      </p>
-    </div>
-  );
 }
 
 function TaskCard() {
