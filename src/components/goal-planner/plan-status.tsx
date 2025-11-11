@@ -1,10 +1,13 @@
 "use client"
 
 import { IconListCheck, IconLoader2 } from "@tabler/icons-react"
-import { useGoalPlanner } from "../providers/goal-planner-provider"
+
+import { TaskCard } from "@/components/goal-planner/task-card"
+import { useGoalPlanner } from "@/components/providers/goal-planner-provider"
+import type { PlanResult } from "@/hooks/useGoalPlanner"
 
 export function PlanStatus() {
-  const { messages, errorMessage, isPending } = useGoalPlanner()
+  const { messages, errorMessage, isPending, plan } = useGoalPlanner()
 
   const hasMessages = messages.length > 0
 
@@ -16,7 +19,7 @@ export function PlanStatus() {
       </div>
 
       <div className="mt-3 text-sm text-muted-foreground/90">
-        {renderContent({ isPending, hasMessages, messages, errorMessage })}
+        {renderContent({ isPending, hasMessages, messages, errorMessage, plan })}
       </div>
     </div>
   )
@@ -27,6 +30,7 @@ type PlanStatusContentProps = {
   hasMessages: boolean
   messages: { id: string; text: string }[]
   errorMessage: string | null
+  plan: PlanResult | null
 }
 
 function renderContent({
@@ -34,9 +38,14 @@ function renderContent({
   hasMessages,
   messages,
   errorMessage,
+  plan,
 }: PlanStatusContentProps) {
   if (errorMessage) {
     return <ErrorState message={errorMessage} />
+  }
+
+  if (plan) {
+    return <CompletedPlanView plan={plan} />
   }
 
   if (isPending && !hasMessages) {
@@ -84,6 +93,30 @@ function StreamingState({
           <p key={message.id} className="text-sm font-mono leading-relaxed">
             {message.text}
           </p>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function CompletedPlanView({ plan }: { plan: PlanResult }) {
+  return (
+    <div className="space-y-4">
+      <div>
+        <p className="text-base font-semibold text-foreground">{plan.goalTitle}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{plan.summary}</p>
+      </div>
+
+      <div className="space-y-3">
+        {plan.tasks.map((task, index) => (
+          <TaskCard
+            key={`${task.title}-${index}`}
+            index={index}
+            title={task.title}
+            description={task.description}
+            dueDate={task.dueDate}
+            status={task.status}
+          />
         ))}
       </div>
     </div>

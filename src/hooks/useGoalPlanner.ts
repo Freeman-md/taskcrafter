@@ -1,6 +1,9 @@
 "use client"
 
 import { useCallback, useMemo, useState, useTransition, type FormEvent } from "react"
+import type { z } from "zod"
+
+import { PlanOutputSchema } from "@/lib/schemas"
 
 export type GoalFormData = {
   goalTitle: string
@@ -15,6 +18,8 @@ export type StreamMessage = {
   text: string
 }
 
+export type PlanResult = z.infer<typeof PlanOutputSchema>
+
 export type GoalPlannerContextValue = {
   formData: GoalFormData
   updateFormField: (field: keyof GoalFormData, value: string) => void
@@ -24,6 +29,7 @@ export type GoalPlannerContextValue = {
   messages: StreamMessage[]
   errorMessage: string | null
   isPending: boolean
+  plan: PlanResult | null
 }
 
 export function useGoalPlannerController(): GoalPlannerContextValue {
@@ -35,6 +41,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
   const [messages, setMessages] = useState<StreamMessage[]>([])
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [plan, setPlan] = useState<PlanResult | null>(null)
   const [isPending, startTransition] = useTransition()
 
   const updateFormField = useCallback((field: keyof GoalFormData, value: string) => {
@@ -47,6 +54,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
     setFieldErrors({})
     setMessages([])
     setErrorMessage(null)
+    setPlan(null)
   }, [])
 
   const readStream = useCallback(async (stream: ReadableStream<Uint8Array>) => {
@@ -69,13 +77,30 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
       lines.forEach((line) => {
         const parsed = parseLine(line)
         if (!parsed) return
-        appendMessage(formatStreamPayload(parsed))
+
+        const completedPlan = extractPlan(parsed)
+        if (completedPlan) {
+          setPlan(completedPlan)
+          return
+        }
+
+        const message = formatStreamPayload(parsed)
+        if (message) appendMessage(message)
       })
     }
 
     if (buffer.trim()) {
       const parsed = parseLine(buffer.trim())
-      if (parsed) appendMessage(formatStreamPayload(parsed))
+      if (parsed) {
+        const completedPlan = extractPlan(parsed)
+        if (completedPlan) {
+          setPlan(completedPlan)
+          return
+        }
+
+        const message = formatStreamPayload(parsed)
+        if (message) appendMessage(message)
+      }
     }
   }, [])
 
@@ -85,6 +110,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
       setMessages([])
       setFieldErrors({})
       setErrorMessage(null)
+      setPlan(null)
 
       startTransition(async () => {
         try {
@@ -132,6 +158,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
       messages,
       errorMessage,
       isPending,
+      plan,
     }),
     [
       clearForm,
@@ -141,6 +168,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
       handleSubmit,
       isPending,
       messages,
+      plan,
       updateFormField,
     ],
   )
@@ -160,6 +188,9 @@ function formatStreamPayload(payload: unknown) {
   if (payload && typeof payload === "object") {
     if ("message" in payload && typeof (payload as any).message === "string") {
       return (payload as any).message
+    }
+    if ("status" in payload && typeof (payload as any).status === "string") {
+      return `Status: ${(payload as any).status}`
     }
     return JSON.stringify(payload)
   }
@@ -197,4 +228,21 @@ function buildFieldErrors(
     if (key) acc[key] = issue.message
     return acc
   }, {})
+}
+
+function extractPlan(payload: unknown): PlanResult | null {
+  if (
+    payload &&
+    typeof payload === "object" &&
+    "status" in payload &&
+    (payload as any).status === "complete" &&
+    "plan" in payload
+  ) {
+    const parsed = PlanOutputSchema.safeParse((payload as any).plan)
+    if (parsed.success) {
+      return parsed.data
+    }
+  }
+
+  return null
 }
