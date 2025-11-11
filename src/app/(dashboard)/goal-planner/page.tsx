@@ -10,31 +10,9 @@ export default function GoalPlanner() {
           <GoalForm />
           <div className="flex flex-col gap-4">
             <PlanStatus />
-            <div className="space-y-3">
-              <TaskCard />
-              <TaskCard />
-              <TaskCard />
-            </div>
           </div>
         </div>
       </div>
     </GoalPlannerProvider>
   )
-}
-
-function TaskCard() {
-  return (
-    <div className="rounded-xl border border-border/70 bg-card/80 p-4 shadow-sm">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm font-semibold">
-          <span className="flex size-7 items-center justify-center rounded-full bg-primary/10 text-primary">1</span>
-          Outline product scope
-        </div>
-        <span className="text-xs font-medium text-muted-foreground">Due Oct 12</span>
-      </div>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Define the core problem, guardrails, and success metrics before kicking off execution.
-      </p>
-    </div>
-  );
 }
