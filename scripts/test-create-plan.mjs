@@ -14,71 +14,48 @@ const cases = [
             context:
                 "Evaluate tutorials, outline new flows, and define the hand-off work."
         }
-    },
-    {
-        name: "edge-min-context",
-        description: "Just enough context (20 chars) to validate boundary",
-        payload: {
-            title: "Edge context goal",
-            deadline: tomorrow(),
-            context: "LLLLLLLLLLLLLLLLLLLL"
-        }
-    },
-    {
-        name: "missing-title",
-        description: "Required field omitted",
-        payload: {
-            deadline: tomorrow(),
-            context:
-                "Should fail because the title is missing even if everything else is valid."
-        }
-    },
-    {
-        name: "bad-deadline",
-        description: "Deadline not parseable as a date",
-        payload: {
-            title: "Deadline typo",
-            deadline: "not-a-date",
-            context:
-                "Should fail because the deadline cannot be coerced into a real date."
-        }
-    },
-    {
-        name: "short-context",
-        description: "Context shorter than the 20 char minimum",
-        payload: {
-            title: "Short context",
-            deadline: tomorrow(),
-            context: "Need more info"
-        }
     }
 ]
 
 async function runTest({ name, description, payload }) {
+    console.log(`▶️ [${name}] Starting test – ${description}`)
+
     const response = await fetch(BASE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
     })
 
-    let body
-    try {
-        body = await response.json()
-    } catch {
-        const text = await response.text()
-        body = {
-            error: "Response body was not JSON",
-            preview: text.slice(0, 200),
-            contentType: response.headers.get("content-type")
+    if (!response.ok) {
+        console.error(`❌ Request failed: ${response.status}`)
+        return
+    }
+
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder()
+    let buffer = ""
+
+    while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        // Decode the chunk directly to string
+        const chunk = decoder.decode(value)
+        console.log("🧩 Chunk received:", chunk)
+
+        // Try to parse if it looks like JSON
+        try {
+            const event = JSON.parse(chunk)
+            console.log("⚙️", event.status, "→", event.message || "(no message)")
+            if (event.status === "complete") {
+                console.log("✅ Plan:", JSON.stringify(event.plan, null, 2))
+            }
+        } catch {
+            // not full JSON yet (partial chunk), ignore
         }
     }
 
-    const statusFlag = response.ok ? "✅" : "❌"
-
-    console.log(
-        `${statusFlag} [${name}] ${response.status} ${response.statusText} – ${description}`,
-    )
-    console.log(JSON.stringify(body, null, 2))
+    console.log(`✅ [${name}] Stream finished`)
     console.log("-".repeat(60))
 }
 

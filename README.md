@@ -59,6 +59,10 @@ Failed cases respond with `400` plus an `issues` array detailing the exact field
 
 Set `CREATE_PLAN_URL` before running the script to point at a different environment (e.g., a deployed preview).
 
+### API Error Handling
+
+Add `withApiErrorHandling` (from `src/lib/api`) around any App Router API route to get consistent JSON errors. Throw `new ApiError({...})` or `new ValidationApiError(issues)` inside your handler and the wrapper will serialize `{ error, message, details }`, log unexpected exceptions, and return a `500` fallback when something slips through.
+
 ### Project Structure
 
 ```
