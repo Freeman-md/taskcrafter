@@ -33,7 +33,6 @@ async function runTest({ name, description, payload }) {
 
     const reader = response.body.getReader()
     const decoder = new TextDecoder()
-    let buffer = ""
 
     while (true) {
         const { done, value } = await reader.read()
