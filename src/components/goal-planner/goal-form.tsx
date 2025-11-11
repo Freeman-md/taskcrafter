@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { IconInfoCircle, IconSparkles } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
@@ -9,85 +8,36 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-export interface GoalFormValues {
-  goalTitle: string;
-  deadline: string;
-  context: string;
-}
-
-interface GoalFormProps {
-  isLoading: boolean;
-  onGenerate(values: GoalFormValues): void;
-  onClear(): void;
-}
-
-export function GoalForm({ isLoading, onGenerate, onClear }: GoalFormProps) {
-  const [values, setValues] = useState<GoalFormValues>({
-    goalTitle: "",
-    deadline: "",
-    context: "",
-  });
-
-  const handleChange = <Field extends keyof GoalFormValues>(field: Field, value: GoalFormValues[Field]) => {
-    setValues((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    onGenerate(values);
-  };
-
-  const handleClear = () => {
-    setValues({ goalTitle: "", deadline: "", context: "" });
-    onClear();
-  };
-
+export function GoalForm() {
   return (
     <Card className="h-full">
       <CardHeader>
         <CardTitle className="text-xl font-semibold">Create a New Goal</CardTitle>
       </CardHeader>
       <CardContent>
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-4">
           <div className="space-y-2">
             <Label htmlFor="goal-title">Goal Title</Label>
-            <Input
-              id="goal-title"
-              value={values.goalTitle}
-              onChange={(event) => handleChange("goalTitle", event.target.value)}
-              placeholder="Enter your goal..."
-              required
-            />
+            <Input id="goal-title" placeholder="Enter your goal..." />
           </div>
           <div className="space-y-2">
             <Label htmlFor="deadline">Deadline (Optional)</Label>
-            <Input
-              id="deadline"
-              type="date"
-              value={values.deadline}
-              onChange={(event) => handleChange("deadline", event.target.value)}
-            />
+            <Input id="deadline" type="date" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="context">Context (Optional)</Label>
             <Textarea
               id="context"
-              value={values.context}
-              onChange={(event) => handleChange("context", event.target.value)}
               placeholder="Provide additional context or requirements..."
               rows={5}
             />
           </div>
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="flex-1"
-            >
+            <Button type="button" className="flex-1">
               <IconSparkles className="mr-2 size-4" />
-              {isLoading ? "Generating..." : "Generate Plan"}
+              Generate Plan
             </Button>
-            <Button type="button" variant="outline" onClick={handleClear} disabled={isLoading}>
+            <Button type="button" variant="outline">
               Clear
             </Button>
           </div>
