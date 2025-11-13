@@ -2,10 +2,9 @@
 
 import { useCallback, useMemo, useState, useTransition, type FormEvent } from "react"
 
-import { FieldErrors, StreamMessage } from "@/types"
-import { buildFieldErrors, extractGoal, formatStreamPayload, isValidationError, parseLine } from "@/lib/goal-planner/parsers"
+import { FieldErrors, StreamMessage, ValidationErrorResponse } from "@/types"
+import { buildFieldErrors, extractGoal, formatStreamPayload, parseLine } from "@/lib/goal-planner/parsers"
 import { Goal, GoalFormData, GoalPlannerContextValue } from "../index"
-import { ValidationApiError } from "@/lib/api"
 
 
 
@@ -22,7 +21,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
   const [isPending, startTransition] = useTransition()
 
   const updateFormField = useCallback((field: keyof GoalFormData, value: string) => {
-    setFormData((previous) => ({ ...previous, [field]: value }))
+    setFormData((previous: GoalFormData) => ({ ...previous, [field]: value }))
     setFieldErrors((previous) => ({ ...previous, [field]: undefined }))
   }, [])
 
@@ -92,8 +91,6 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
 
       clearData()
 
-      console.log(formData)
-
       startTransition(async () => {
         try {
           const response = await fetch("/api/goal/create-plan", {
@@ -107,8 +104,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
           })
 
           if (!response.ok || !response.body) {
-            console.log(await response.json())
-            const data = await response.json() as ValidationApiError
+            const data = await response.json() as ValidationErrorResponse
 
             if (data.error === "VALIDATION_ERROR" && data.details?.issues) {
               setFieldErrors(buildFieldErrors(data?.details?.issues))

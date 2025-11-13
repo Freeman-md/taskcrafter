@@ -1,3 +1,5 @@
+import 'server-only'
+
 import { openai } from "@/lib/openai"
 import { buildGoalPlanMessages } from "../utils/prompt-generators"
 import { GoalInput } from "../types"

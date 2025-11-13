@@ -1,7 +1,5 @@
 export * from './types'
 
-export * from './services'
-
 export * from './goal.schema'
 
 export * from './hooks'

@@ -9,9 +9,9 @@ export const GoalInputSchema = z.object({
 
   deadline: z
     .string()
-    // .optional()
+    .optional()
     .refine(
-      (value) => !isNaN(Date.parse(value)),
+      (value) => !value || !isNaN(Date.parse(value)),
       "Please enter a valid date."
     ),
 
