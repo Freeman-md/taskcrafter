@@ -1,13 +1,17 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { IconAlertTriangle, IconCircleCheckFilled, IconPlus } from "@tabler/icons-react"
+import {
+  IconAlertTriangle,
+  IconCircleCheckFilled,
+  IconPlus,
+} from "@tabler/icons-react";
 
-import { Card, CardContent } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
-import type { Activity } from "@/types/activity"
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils/cn";
+import type { Activity } from "@/types/activity";
 
 interface ActivityItemProps {
-  activity: Activity
+  activity: Activity;
 }
 
 const activities: Activity[] = [
@@ -29,11 +33,11 @@ const activities: Activity[] = [
     title: 'Deadline approaching: "User testing phase"',
     detail: "Team Onboarding • Due in 2 days",
   },
-]
+];
 
 function ActivityItem({ activity }: ActivityItemProps) {
-  const iconConfig = getIconConfig(activity.type)
-  const IconComponent = iconConfig.icon
+  const iconConfig = getIconConfig(activity.type);
+  const IconComponent = iconConfig.icon;
 
   return (
     <li className="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
@@ -54,7 +58,7 @@ function ActivityItem({ activity }: ActivityItemProps) {
         <p className="text-sm text-muted-foreground">{activity.detail}</p>
       </div>
     </li>
-  )
+  );
 }
 
 function getIconConfig(type: Activity["type"]) {
@@ -64,25 +68,25 @@ function getIconConfig(type: Activity["type"]) {
         icon: IconCircleCheckFilled,
         background: "bg-emerald-500/10 dark:bg-emerald-500/20",
         color: "text-emerald-500 dark:text-emerald-400",
-      }
+      };
     case "new-goal":
       return {
         icon: IconPlus,
         background: "bg-primary/10 dark:bg-primary/20",
         color: "text-primary",
-      }
+      };
     case "deadline":
       return {
         icon: IconAlertTriangle,
         background: "bg-amber-500/10 dark:bg-amber-500/20",
         color: "text-amber-500 dark:text-amber-400",
-      }
+      };
     default:
       return {
         icon: IconPlus,
         background: "bg-muted",
         color: "text-muted-foreground",
-      }
+      };
   }
 }
 
@@ -110,5 +114,5 @@ export default function RecentActivity() {
         </CardContent>
       </Card>
     </section>
-  )
+  );
 }

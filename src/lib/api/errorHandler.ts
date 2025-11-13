@@ -1,5 +1,5 @@
+import { ValidationIssue } from "@/types"
 import { NextResponse } from "next/server"
-import type { ValidationIssue } from "@/lib/validation/validateRequest"
 
 type ApiErrorInit = {
     message: string

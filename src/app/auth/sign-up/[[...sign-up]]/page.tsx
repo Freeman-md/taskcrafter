@@ -1,6 +1,6 @@
 import { SignUp } from "@clerk/nextjs";
 
-import { authAppearance } from "@/components/auth/auth-appearance";
+import { authAppearance } from "@/features/auth/auth-appearance";
 
 export default function SignUpPage() {
   return (

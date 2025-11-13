@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { IconListCheck, IconLoader2 } from "@tabler/icons-react"
+import { IconListCheck, IconLoader2 } from "@tabler/icons-react";
 
-import { TaskCard } from "@/components/goal-planner/task-card"
-import { useGoalPlanner } from "@/components/providers/goal-planner-provider"
-import type { PlanResult } from "@/hooks/useGoalPlanner"
+import { TaskCard } from "@/features/goal-planner/components/task-card";
+import { useGoalPlanner } from "@/components/providers/goal-planner-provider";
+import { Goal } from "../index";
 
-export function PlanStatus() {
-  const { messages, errorMessage, isPending, plan } = useGoalPlanner()
+export function GoalBreakdown() {
+  const { streamMessages, errorMessage, isPending, goal } = useGoalPlanner();
 
-  const hasMessages = messages.length > 0
+  const hasMessages = streamMessages.length > 0;
 
   return (
     <div className="rounded-2xl border border-dashed border-border/80 bg-muted/20 p-6 shadow-sm">
@@ -19,44 +19,50 @@ export function PlanStatus() {
       </div>
 
       <div className="mt-3 text-sm text-muted-foreground/90">
-        {renderContent({ isPending, hasMessages, messages, errorMessage, plan })}
+        {renderContent({
+          isPending,
+          hasMessages,
+          streamMessages,
+          errorMessage,
+          goal,
+        })}
       </div>
     </div>
-  )
+  );
 }
 
-type PlanStatusContentProps = {
-  isPending: boolean
-  hasMessages: boolean
-  messages: { id: string; text: string }[]
-  errorMessage: string | null
-  plan: PlanResult | null
-}
+type GoalBreakdownContentProps = {
+  isPending: boolean;
+  hasMessages: boolean;
+  streamMessages: { id: string; text: string }[];
+  errorMessage: string | null;
+  goal: Goal | null;
+};
 
 function renderContent({
   isPending,
   hasMessages,
-  messages,
+  streamMessages,
   errorMessage,
-  plan,
-}: PlanStatusContentProps) {
+  goal,
+}: GoalBreakdownContentProps) {
   if (errorMessage) {
-    return <ErrorState message={errorMessage} />
+    return <ErrorState message={errorMessage} />;
   }
 
-  if (plan) {
-    return <CompletedPlanView plan={plan} />
+  if (goal) {
+    return <CompletedPlanView goal={goal} />;
   }
 
   if (isPending && !hasMessages) {
-    return <LoadingState />
+    return <LoadingState />;
   }
 
   if (hasMessages) {
-    return <StreamingState messages={messages} isPending={isPending} />
+    return <StreamingState streamMessages={streamMessages} isPending={isPending} />;
   }
 
-  return <EmptyState />
+  return <EmptyState />;
 }
 
 function EmptyState() {
@@ -64,24 +70,24 @@ function EmptyState() {
     <p className="text-sm text-muted-foreground">
       Plan preview will appear here once you generate a goal.
     </p>
-  )
+  );
 }
 
 function LoadingState() {
   return (
     <div className="flex items-center gap-3 text-muted-foreground">
       <IconLoader2 className="size-4 animate-spin text-primary" />
-      <span>Generating your plan…</span>
+      <span>Generating your goal plan…</span>
     </div>
-  )
+  );
 }
 
 function StreamingState({
-  messages,
+  streamMessages,
   isPending,
 }: {
-  messages: { id: string; text: string }[]
-  isPending: boolean
+  streamMessages: { id: string; text: string }[];
+  isPending: boolean;
 }) {
   return (
     <div className="space-y-3">
@@ -89,26 +95,28 @@ function StreamingState({
         <p className="text-xs font-medium text-primary">Streaming live…</p>
       )}
       <div className="max-h-64 space-y-2 overflow-y-auto rounded-lg border border-border/60 bg-background/80 p-3 text-foreground shadow-inner">
-        {messages.map((message) => (
+        {streamMessages.map((message) => (
           <p key={message.id} className="text-sm font-mono leading-relaxed">
             {message.text}
           </p>
         ))}
       </div>
     </div>
-  )
+  );
 }
 
-function CompletedPlanView({ plan }: { plan: PlanResult }) {
+function CompletedPlanView({ goal }: { goal: Goal }) {
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-base font-semibold text-foreground">{plan.goalTitle}</p>
-        <p className="mt-1 text-sm text-muted-foreground">{plan.summary}</p>
+        <p className="text-base font-semibold text-foreground">
+          {goal.title}
+        </p>
+        <p className="mt-1 text-sm text-muted-foreground">{goal.summary}</p>
       </div>
 
       <div className="space-y-3">
-        {plan.tasks.map((task, index) => (
+        {goal.tasks.map((task, index) => (
           <TaskCard
             key={`${task.title}-${index}`}
             index={index}
@@ -120,7 +128,7 @@ function CompletedPlanView({ plan }: { plan: PlanResult }) {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 function ErrorState({ message }: { message: string }) {
@@ -128,5 +136,5 @@ function ErrorState({ message }: { message: string }) {
     <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-destructive">
       {message}
     </div>
-  )
+  );
 }

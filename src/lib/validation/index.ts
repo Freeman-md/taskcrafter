@@ -1,1 +1,1 @@
-export * from './validateRequest'
+export * from '../utils/validation'

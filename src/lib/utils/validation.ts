@@ -1,13 +1,12 @@
+import { ValidationIssue, ValidationResult } from "@/types"
 import z from "zod"
 
-export type ValidationIssue = {
-    field: string
-    message: string
+export function buildFieldErrorsFromZod(issues: any[]): ValidationIssue[] {
+  return issues.map((issue) => ({
+    field: issue.path?.[0] ?? "unknown",
+    message: issue.message ?? "Invalid input",
+  }))
 }
-
-export type ValidationResult<T> =
-    | { success: true; data: T }
-    | { success: false; issues: ValidationIssue[] }
 
 export function validateRequest<T>(
     schema: z.ZodType<T>,

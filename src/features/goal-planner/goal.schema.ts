@@ -9,9 +9,9 @@ export const GoalInputSchema = z.object({
 
   deadline: z
     .string()
-    .optional()
+    // .optional()
     .refine(
-      (value) => !value || !isNaN(Date.parse(value)),
+      (value) => !isNaN(Date.parse(value)),
       "Please enter a valid date."
     ),
 
@@ -31,8 +31,9 @@ export const TaskSchema = z.object({
     status: z.enum(['pending', 'completed'])
 })
 
-export const PlanOutputSchema = z.object({
-    goalTitle: z.string(),
+export const GoalOutputSchema = z.object({
+    title: z.string(),
     summary: z.string(),
+    deadline: z.string(),
     tasks: z.array(TaskSchema)
 })

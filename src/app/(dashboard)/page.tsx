@@ -1,7 +1,7 @@
-import { SectionCards } from "@/components/dashboard/section-cards";
+import { SectionCards } from "@/features/dashboard/components/section-cards";
 
-import ActiveGoals from "@/components/dashboard/active-goals";
-import RecentActivity from "@/components/dashboard/recent-activity";
+import ActiveGoals from "@/features/dashboard/components/active-goals";
+import RecentActivity from "@/features/dashboard/components/recent-activity";
 
 export default function Page() {
   return (

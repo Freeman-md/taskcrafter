@@ -1,34 +1,36 @@
+import { Goal } from "@/features/goal-planner";
 import Link from "next/link";
-
 import { GoalCard } from "./goal-card";
-import { Goal } from "@/types/goal";
 
 const activeGoals: Goal[] = [
   {
     id: "goal-1",
     title: "Launch Mobile App",
-    description:
+    summary:
       "Complete development and deployment of the cross-platform app.",
     completedTasks: 12,
     totalTasks: 15,
-    dueDate: "2024-12-15",
+    deadline: "2024-12-15",
+    tasks: []
   },
   {
     id: "goal-2",
     title: "Team Onboarding",
-    description:
+    summary:
       "Roll out the comprehensive onboarding plan for new team members.",
     completedTasks: 8,
     totalTasks: 15,
-    dueDate: "2025-01-10",
+    deadline: "2025-01-10",
+    tasks: []
   },
   {
     id: "goal-3",
     title: "Automation Playbook",
-    description: "Document and automate the top five recurring workflows.",
+    summary: "Document and automate the top five recurring workflows.",
     completedTasks: 5,
     totalTasks: 12,
-    dueDate: "2024-11-30",
+    deadline: "2024-11-30",
+    tasks: []
   },
 ];
 
