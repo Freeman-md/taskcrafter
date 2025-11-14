@@ -70,6 +70,10 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
         try {
           const parsedMessage = JSON.parse(trimmed) as StreamMessage<Goal>
           appendStreamMessage(parsedMessage)
+
+          if (parsedMessage.status === "complete" && parsedMessage.data) {
+            setGoal(parsedMessage.data)
+          }
         } catch {
           console.error("Failed to parse streamed message:", trimmed)
         }

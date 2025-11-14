@@ -1,7 +1,8 @@
-import { GoalInputSchema, GoalOutputSchema } from "@/lib/schemas"
+
 import { FieldErrors, StreamMessage } from "@/types"
 import { FormEvent } from "react"
 import z from 'zod'
+import { GoalInputSchema, GoalOutputSchema } from "./goal.schema"
 
 export type GoalInput = z.infer<typeof GoalInputSchema>
 
@@ -19,7 +20,7 @@ export type GoalPlannerContextValue = {
   clearForm: () => void
   handleSubmit: (event: FormEvent<HTMLFormElement>) => void
   fieldErrors: FieldErrors<GoalFormData>
-  streamMessages: StreamMessage[]
+  streamMessages: StreamMessage<Goal>[]
   errorMessage: string | null
   isPending: boolean
   goal: Goal | null

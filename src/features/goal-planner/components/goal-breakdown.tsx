@@ -27,6 +27,7 @@ export function GoalBreakdown() {
           hasMessages,
           streamMessages,
           errorMessage,
+          goal
         })}
       </div>
     </div>
@@ -38,7 +39,7 @@ type GoalBreakdownContentProps = {
   hasMessages: boolean;
   streamMessages: StreamMessage<Goal>[];
   errorMessage: string | null;
-  goal?: Goal | null;
+  goal: Goal | null;
 };
 
 function renderContent({
