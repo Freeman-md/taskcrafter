@@ -5,6 +5,9 @@ import { IconListCheck, IconLoader2 } from "@tabler/icons-react";
 import { TaskCard } from "@/features/goal-planner/components/task-card";
 import { useGoalPlanner } from "@/components/providers/goal-planner-provider";
 import { Goal } from "../index";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { AlertCircleIcon } from "lucide-react";
+import { StreamMessage } from "@/types";
 
 export function GoalBreakdown() {
   const { streamMessages, errorMessage, isPending, goal } = useGoalPlanner();
@@ -24,7 +27,6 @@ export function GoalBreakdown() {
           hasMessages,
           streamMessages,
           errorMessage,
-          goal,
         })}
       </div>
     </div>
@@ -34,9 +36,9 @@ export function GoalBreakdown() {
 type GoalBreakdownContentProps = {
   isPending: boolean;
   hasMessages: boolean;
-  streamMessages: { id: string; text: string }[];
+  streamMessages: StreamMessage<Goal>[];
   errorMessage: string | null;
-  goal: Goal | null;
+  goal?: Goal | null;
 };
 
 function renderContent({
@@ -59,7 +61,9 @@ function renderContent({
   }
 
   if (hasMessages) {
-    return <StreamingState streamMessages={streamMessages} isPending={isPending} />;
+    return (
+      <StreamingState streamMessages={streamMessages} isPending={isPending} />
+    );
   }
 
   return <EmptyState />;
@@ -86,17 +90,24 @@ function StreamingState({
   streamMessages,
   isPending,
 }: {
-  streamMessages: { id: string; text: string }[];
+  streamMessages: StreamMessage<Goal>[];
   isPending: boolean;
 }) {
+  const visibleMessages = streamMessages.filter(
+    (message) => message.status !== "complete"
+  );
+
   return (
     <div className="space-y-3">
       {isPending && (
-        <p className="text-xs font-medium text-primary">Streaming live…</p>
+        <p className="text-xs font-medium text-primary">
+          Streaming live…
+        </p>
       )}
-      <div className="max-h-64 space-y-2 overflow-y-auto rounded-lg border border-border/60 bg-background/80 p-3 text-foreground shadow-inner">
-        {streamMessages.map((message) => (
-          <p key={message.id} className="text-sm font-mono leading-relaxed">
+
+      <div className="max-h-64 overflow-y-auto rounded-lg border bg-background/80 p-3 shadow-inner">
+        {visibleMessages.map((message, index) => (
+          <p key={index} className="text-sm font-mono text-muted-foreground">
             {message.text}
           </p>
         ))}
@@ -109,9 +120,7 @@ function CompletedPlanView({ goal }: { goal: Goal }) {
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-base font-semibold text-foreground">
-          {goal.title}
-        </p>
+        <p className="text-base font-semibold text-foreground">{goal.title}</p>
         <p className="mt-1 text-sm text-muted-foreground">{goal.summary}</p>
       </div>
 
@@ -133,8 +142,9 @@ function CompletedPlanView({ goal }: { goal: Goal }) {
 
 function ErrorState({ message }: { message: string }) {
   return (
-    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-destructive">
-      {message}
-    </div>
+    <Alert variant="destructive">
+      <AlertCircleIcon />
+      <AlertTitle>{message}</AlertTitle>
+    </Alert>
   );
 }

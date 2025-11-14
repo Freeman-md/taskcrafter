@@ -1,11 +1,12 @@
-import { ValidationIssue, ValidationResult } from "@/types"
+import { FieldErrors, ValidationIssue, ValidationResult } from "@/types"
 import z from "zod"
+import { ZodIssue } from "zod/v3"
 
 export function buildFieldErrorsFromZod(issues: any[]): ValidationIssue[] {
-  return issues.map((issue) => ({
-    field: issue.path?.[0] ?? "unknown",
-    message: issue.message ?? "Invalid input",
-  }))
+    return issues.map((issue) => ({
+        field: issue.path?.[0] ?? "unknown",
+        message: issue.message ?? "Invalid input",
+    }))
 }
 
 export function validateRequest<T>(
@@ -27,4 +28,16 @@ export function validateRequest<T>(
     }
 
     return { success: true, data: result.data }
+}
+
+export function formatErrors<T>(issues: ValidationIssue[]): FieldErrors<T> {
+    return issues.reduce((errors, issue) => {
+        const field = issue.field as keyof T
+
+        if (field) {
+            errors[field] = issue.message
+        }
+
+        return errors
+    }, {} as FieldErrors<T>)
 }

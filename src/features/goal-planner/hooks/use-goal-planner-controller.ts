@@ -3,8 +3,9 @@
 import { useCallback, useMemo, useState, useTransition, type FormEvent } from "react"
 
 import { FieldErrors, StreamMessage, ValidationErrorResponse } from "@/types"
-import { buildFieldErrors, extractGoal, formatStreamPayload, parseLine } from "@/lib/goal-planner/parsers"
 import { Goal, GoalFormData, GoalPlannerContextValue } from "../index"
+import { VALIDATION_ERROR } from "@/constants"
+import { formatErrors } from "@/lib/validation"
 
 
 
@@ -15,7 +16,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
     context: "",
   })
   const [fieldErrors, setFieldErrors] = useState<FieldErrors<GoalFormData>>({})
-  const [streamMessages, setStreamMessages] = useState<StreamMessage[]>([])
+  const [streamMessages, setStreamMessages] = useState<StreamMessage<Goal>[]>([])
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [goal, setGoal] = useState<Goal | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -33,57 +34,60 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
   }, [])
 
   const clearForm = useCallback(() => {
-    setFormData({ title: "", deadline: "", context: "" })    
+    setFormData({ title: "", deadline: "", context: "" })
 
     clearData()
   }, [clearData])
 
+  const appendStreamMessage = (message: StreamMessage<Goal>) => {
+    setStreamMessages((prev) => [...prev, message])
+  }
+
   const readStream = useCallback(async (stream: ReadableStream<Uint8Array>) => {
     const reader = stream.getReader()
-    const decoder = new TextDecoder()
-    let buffer = ""
+    const textDecoder = new TextDecoder()
 
-    const appendMessage = (text: string) => {
-      setStreamMessages((previous) => [...previous, { id: crypto.randomUUID(), text }])
-    }
+    // Stores incomplete pieces of JSON between chunks
+    let bufferedText = ""
 
     while (true) {
       const { done, value } = await reader.read()
       if (done) break
 
-      buffer += decoder.decode(value, { stream: true })
-      const lines = buffer.split("\n")
-      buffer = lines.pop() ?? ""
+      bufferedText += textDecoder.decode(value, { stream: true })
 
-      lines.forEach((line) => {
-        const parsed = parseLine(line)
-        if (!parsed) return
+      // Split the buffer by newline-delimited messages
+      const lines = bufferedText.split("\n")
 
-        const completedGoal = extractGoal(parsed)
-        if (completedGoal) {
-          setGoal(completedGoal)
-          return
+      // Last item may be incomplete → keep it in the buffer
+      bufferedText = lines.pop() ?? ""
+
+      // Process all complete lines
+      for (const line of lines) {
+        const trimmed = line.trim()
+        if (!trimmed) continue
+
+        try {
+          const parsedMessage = JSON.parse(trimmed) as StreamMessage<Goal>
+          appendStreamMessage(parsedMessage)
+        } catch {
+          console.error("Failed to parse streamed message:", trimmed)
         }
-
-        const message = formatStreamPayload(parsed)
-        if (message) appendMessage(message)
-      })
+      }
     }
 
-    if (buffer.trim()) {
-      const parsed = parseLine(buffer.trim())
-      if (parsed) {
-        const completedGoal = extractGoal(parsed)
-        if (completedGoal) {
-          setGoal(completedGoal)
-          return
-        }
-
-        const message = formatStreamPayload(parsed)
-        if (message) appendMessage(message)
+    // Handle any leftover data after the stream ends
+    const remaining = bufferedText.trim()
+    if (remaining) {
+      try {
+        const parsedMessage = JSON.parse(remaining) as StreamMessage<Goal>
+        appendStreamMessage(parsedMessage)
+      } catch {
+        console.error("Failed to parse final buffered message:", remaining)
       }
     }
   }, [])
+
 
   const handleSubmit = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
@@ -106,8 +110,10 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
           if (!response.ok || !response.body) {
             const data = await response.json() as ValidationErrorResponse
 
-            if (data.error === "VALIDATION_ERROR" && data.details?.issues) {
-              setFieldErrors(buildFieldErrors(data?.details?.issues))
+            if (data.error === VALIDATION_ERROR && data.details?.issues) {
+              const formattedErrors = formatErrors(data.details.issues)
+
+              setFieldErrors(formattedErrors)
               return
             }
 
