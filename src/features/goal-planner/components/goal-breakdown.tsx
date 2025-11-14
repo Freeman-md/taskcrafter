@@ -93,28 +93,34 @@ function StreamingState({
   streamMessages: StreamMessage<Goal>[];
   isPending: boolean;
 }) {
-  const visibleMessages = streamMessages.filter(
-    (message) => message.status !== "complete"
-  );
+  const latestMessage = streamMessages
+    .filter((message) => message.status !== "complete")
+    .at(-1); // last message
 
   return (
     <div className="space-y-3">
       {isPending && (
-        <p className="text-xs font-medium text-primary">
-          Streaming live…
-        </p>
+        <p className="text-xs font-medium text-primary">Streaming live…</p>
       )}
 
-      <div className="max-h-64 overflow-y-auto rounded-lg border bg-background/80 p-3 shadow-inner">
-        {visibleMessages.map((message, index) => (
-          <p key={index} className="text-sm font-mono text-muted-foreground">
-            {message.text}
+      <div className="rounded-lg border bg-background/80 p-3 shadow-inner">
+        {latestMessage ? (
+          <div className="animate-pulse rounded-md bg-muted/40 px-3 py-2">
+            <p className="text-sm font-mono text-muted-foreground">
+              {latestMessage.text}
+            </p>
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Preparing first steps…
           </p>
-        ))}
+        )}
       </div>
     </div>
   );
 }
+
+
 
 function CompletedPlanView({ goal }: { goal: Goal }) {
   return (
