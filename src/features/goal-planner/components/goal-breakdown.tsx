@@ -4,7 +4,6 @@ import { IconListCheck } from "@tabler/icons-react";
 
 import { TaskCard } from "@/features/goal-planner/components/task-card";
 import { useGoalPlanner } from "@/components/providers/goal-planner-provider";
-import { Goal } from "../index";
 import { StreamMessage } from "@/types";
 import {
   EmptyState,
@@ -12,13 +11,15 @@ import {
   LoadingState,
   StreamingState,
 } from "./view-states";
+import { GoalWithTasks } from "../types";
+
 
 type GoalBreakdownContentProps = {
   isPending: boolean;
   hasMessages: boolean;
-  streamMessages: StreamMessage<Goal>[];
+  streamMessages: StreamMessage<GoalWithTasks>[];
   errorMessage: string | null;
-  goal: Goal | null;
+  goal: GoalWithTasks | null;
 };
 
 export function GoalBreakdown() {
@@ -74,7 +75,7 @@ function renderContent({
   return <EmptyState />;
 }
 
-function CompletedPlanView({ goal }: { goal: Goal }) {
+function CompletedPlanView({ goal }: { goal: GoalWithTasks }) {
   const { updateTask } = useGoalPlanner();
 
   const handleTitleChange = (taskId: string, value: string) =>

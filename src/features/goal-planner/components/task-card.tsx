@@ -3,16 +3,16 @@
 import { IconCheck, IconCircle } from "@tabler/icons-react";
 
 import { cn } from "@/lib/cn";
-import { formatDate } from "@/lib/format-date";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { formatDate } from "@/lib/format-date";
 
 type TaskCardProps = {
   index: number;
   id: string;
   title: string;
   description?: string | null;
-  dueDate?: string | null;
+  dueDate?: Date | null;
   status: "pending" | "completed";
   onChangeTitle: (id: string, title: string) => void;
   onChangeDescription: (id: string, description: string) => void;

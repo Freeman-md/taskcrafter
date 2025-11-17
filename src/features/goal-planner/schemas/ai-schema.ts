@@ -1,6 +1,7 @@
 import z from 'zod'
+import { GoalSchema, TaskSchema } from '../../../../prisma/generated/zod';
 
-export const GoalInputSchema = z.object({
+export const AIGoalInputSchema = z.object({
   title: z
     .string({
       error: "Goal title is required.",
@@ -24,17 +25,18 @@ export const GoalInputSchema = z.object({
     ),
 })
 
-export const TaskSchema = z.object({
-    id: z.string(),
-    title: z.string(),
-    description: z.string().nullable().optional(),
-    dueDate: z.iso.datetime().nullable().optional(),
-    status: z.enum(['pending', 'completed'])
-})
+export const AITaskSchema = TaskSchema.pick({
+  title: true,
+  description: true,
+  dueDate: true,
+  status: true,
+});
 
-export const GoalOutputSchema = z.object({
-    title: z.string(),
-    summary: z.string(),
-    deadline: z.string(),
-    tasks: z.array(TaskSchema)
-})
+export const AIGoalOutputSchema = GoalSchema.pick({
+  title: true,
+  summary: true,
+  deadline: true,
+}).extend({
+  deadline: z.string().nullable(),
+  tasks: z.array(AITaskSchema),
+});

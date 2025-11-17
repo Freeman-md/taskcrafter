@@ -1,5 +1,5 @@
 import { ResponseInput } from "openai/resources/responses/responses.mjs";
-import { GoalInput } from "../index";
+import { GoalInput } from "../../types";
 
 export function buildGoalPlanMessages(input: GoalInput): ResponseInput {
     return [

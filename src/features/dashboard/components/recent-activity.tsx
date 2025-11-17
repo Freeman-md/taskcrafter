@@ -7,7 +7,7 @@ import {
 } from "@tabler/icons-react";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@/lib/cn";
 import type { Activity } from "@/types/activity";
 
 interface ActivityItemProps {

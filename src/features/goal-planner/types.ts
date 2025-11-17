@@ -2,27 +2,24 @@
 import { FieldErrors, StreamMessage } from "@/types"
 import { FormEvent } from "react"
 import z from 'zod'
-import { GoalInputSchema, GoalOutputSchema, TaskSchema } from "./goal.schema"
+import { AIGoalInputSchema } from "./schemas"
+import { Goal, Task } from "../../../prisma/generated/zod"
 
-export type GoalInput = z.infer<typeof GoalInputSchema>
-
-export type Goal = z.infer<typeof GoalOutputSchema> & {
-  id?: string;
-  completedTasks?: number
-  totalTasks?: number
+export type GoalWithTasks = Goal & {
+  tasks: Task[]
 }
 
-export type Task = z.infer<typeof TaskSchema>
+export type GoalInput = z.infer<typeof AIGoalInputSchema>
 
-export type GoalFormData = z.infer<typeof GoalInputSchema>
+export type GoalFormData = z.infer<typeof AIGoalInputSchema>
 
 export type GoalPlannerContextValue = {
   formData: GoalFormData
   fieldErrors: FieldErrors<GoalFormData>
-  streamMessages: StreamMessage<Goal>[]
+  streamMessages: StreamMessage<GoalWithTasks>[]
   errorMessage: string | null
   isPending: boolean
-  goal: Goal | null
+  goal: GoalWithTasks | null
   updateFormField: (field: keyof GoalFormData, value: string) => void
   updateTask: (taskId: string, field: "title" | "description", value: string) => void
   clearForm: () => void

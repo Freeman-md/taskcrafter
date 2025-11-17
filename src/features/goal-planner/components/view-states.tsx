@@ -1,6 +1,6 @@
 import { StreamMessage } from "@/types";
 import { IconLoader2, IconMoodEmpty } from "@tabler/icons-react";
-import { Goal } from "../types";
+import { GoalWithTasks } from "../types";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 
@@ -8,7 +8,7 @@ export function StreamingState({
   streamMessages,
   isPending,
 }: {
-  streamMessages: StreamMessage<Goal>[];
+  streamMessages: StreamMessage<GoalWithTasks>[];
   isPending: boolean;
 }) {
   const latestMessage = streamMessages

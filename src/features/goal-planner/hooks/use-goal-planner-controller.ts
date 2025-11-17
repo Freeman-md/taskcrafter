@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState, useTransition, type FormEvent } from "react"
 
 import { FieldErrors, StreamMessage, ValidationErrorResponse } from "@/types"
-import { Goal, GoalFormData, GoalPlannerContextValue } from "../index"
+import { GoalFormData, GoalPlannerContextValue, GoalWithTasks } from "../types"
 import { VALIDATION_ERROR } from "@/constants"
 import { formatErrors } from "@/lib/validation"
 import { modifyGoalTasks } from "../utils/modify-goal-tasks"
@@ -17,9 +17,9 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
     context: "",
   })
   const [fieldErrors, setFieldErrors] = useState<FieldErrors<GoalFormData>>({})
-  const [streamMessages, setStreamMessages] = useState<StreamMessage<Goal>[]>([])
+  const [streamMessages, setStreamMessages] = useState<StreamMessage<GoalWithTasks>[]>([])
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [goal, setGoal] = useState<Goal | null>(null)
+  const [goal, setGoal] = useState<GoalWithTasks | null>(null)
   const [isPending, startTransition] = useTransition()
 
   const updateFormField = useCallback((field: keyof GoalFormData, value: string) => {
@@ -40,7 +40,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
     clearData()
   }, [clearData])
 
-  const appendStreamMessage = (message: StreamMessage<Goal>) => {
+  const appendStreamMessage = (message: StreamMessage<GoalWithTasks>) => {
     setStreamMessages((prev) => [...prev, message])
   }
 
@@ -56,7 +56,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
               ? { ...task, [field]: value }
               : task
           })
-        } as Goal
+        } as GoalWithTasks
       })
     },
     []
@@ -87,7 +87,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
         if (!trimmed) continue
 
         try {
-          const parsedMessage = JSON.parse(trimmed) as StreamMessage<Goal>
+          const parsedMessage = JSON.parse(trimmed) as StreamMessage<GoalWithTasks>
           appendStreamMessage(parsedMessage)
 
           if (parsedMessage.status === "complete" && parsedMessage.data) {
@@ -107,7 +107,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
     const remainingMessags = bufferedText.trim()
     if (remainingMessags) {
       try {
-        const parsedMessage = JSON.parse(remainingMessags) as StreamMessage<Goal>
+        const parsedMessage = JSON.parse(remainingMessags) as StreamMessage<GoalWithTasks>
         appendStreamMessage(parsedMessage)
       } catch {
         console.error("Failed to parse final buffered message:", remainingMessags)

@@ -1,12 +1,12 @@
-import { GoalInputSchema } from "@/features/goal-planner";
-import { createGoalPlan } from "@/features/goal-planner/server";
+import { AIGoalInputSchema } from "@/features/goal-planner/schemas"
+import { createGoalPlan } from "@/features/goal-planner/services/ai"
 import { withApiErrorHandling, ValidationApiError } from "@/lib/api"
 import { validateRequest } from "@/lib/validation"
 
 
 export const POST = withApiErrorHandling(async (request: Request) => {
     const body = await request.json()
-    const validation = validateRequest(GoalInputSchema, body)
+    const validation = validateRequest(AIGoalInputSchema, body)
 
     if (!validation.success) {
         throw new ValidationApiError(validation.issues)

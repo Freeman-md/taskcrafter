@@ -1,7 +1,7 @@
 import { createStreamHelpers } from "@/lib/streaming/create-stream-helpers"
 import { Stream } from "openai/core/streaming.mjs";
 import { ResponseStreamEvent } from "openai/resources/responses/responses.mjs";
-import { Goal } from "../types";
+import { Goal } from "../../../../../prisma/generated/zod";
 
 
 export const createGoalPlanReadableStream = (response: Stream<ResponseStreamEvent> & {
