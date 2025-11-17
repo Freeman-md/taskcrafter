@@ -18,4 +18,4 @@ export async function createGoalPlan(input: GoalInput) {
     })
 
     return await createGoalPlanReadableStream(response)
-}
+} 

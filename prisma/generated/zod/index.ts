@@ -12,7 +12,7 @@ import type { Prisma } from '@prisma/client';
 
 export const TransactionIsolationLevelSchema = z.enum(['ReadUncommitted','ReadCommitted','RepeatableRead','Serializable']);
 
-export const GoalScalarFieldEnumSchema = z.enum(['id','title','summary','deadline','createdAt','updatedAt']);
+export const GoalScalarFieldEnumSchema = z.enum(['id','userId','title','summary','deadline','createdAt','updatedAt']);
 
 export const TaskScalarFieldEnumSchema = z.enum(['id','goalId','title','description','dueDate','status','createdAt','updatedAt']);
 
@@ -36,6 +36,7 @@ export type TaskStatusType = `${z.infer<typeof TaskStatusSchema>}`
 
 export const GoalSchema = z.object({
   id: z.uuid(),
+  userId: z.string(),
   title: z.string(),
   summary: z.string(),
   deadline: z.coerce.date().nullable(),
@@ -89,6 +90,7 @@ export const GoalCountOutputTypeSelectSchema: z.ZodType<Prisma.GoalCountOutputTy
 
 export const GoalSelectSchema: z.ZodType<Prisma.GoalSelect> = z.object({
   id: z.boolean().optional(),
+  userId: z.boolean().optional(),
   title: z.boolean().optional(),
   summary: z.boolean().optional(),
   deadline: z.boolean().optional(),
@@ -132,6 +134,7 @@ export const GoalWhereInputSchema: z.ZodType<Prisma.GoalWhereInput> = z.strictOb
   OR: z.lazy(() => GoalWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => GoalWhereInputSchema), z.lazy(() => GoalWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   title: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   summary: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   deadline: z.union([ z.lazy(() => DateTimeNullableFilterSchema), z.coerce.date() ]).optional().nullable(),
@@ -142,6 +145,7 @@ export const GoalWhereInputSchema: z.ZodType<Prisma.GoalWhereInput> = z.strictOb
 
 export const GoalOrderByWithRelationInputSchema: z.ZodType<Prisma.GoalOrderByWithRelationInput> = z.strictObject({
   id: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   title: z.lazy(() => SortOrderSchema).optional(),
   summary: z.lazy(() => SortOrderSchema).optional(),
   deadline: z.union([ z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -158,6 +162,7 @@ export const GoalWhereUniqueInputSchema: z.ZodType<Prisma.GoalWhereUniqueInput> 
   AND: z.union([ z.lazy(() => GoalWhereInputSchema), z.lazy(() => GoalWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => GoalWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => GoalWhereInputSchema), z.lazy(() => GoalWhereInputSchema).array() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   title: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   summary: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   deadline: z.union([ z.lazy(() => DateTimeNullableFilterSchema), z.coerce.date() ]).optional().nullable(),
@@ -168,6 +173,7 @@ export const GoalWhereUniqueInputSchema: z.ZodType<Prisma.GoalWhereUniqueInput> 
 
 export const GoalOrderByWithAggregationInputSchema: z.ZodType<Prisma.GoalOrderByWithAggregationInput> = z.strictObject({
   id: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   title: z.lazy(() => SortOrderSchema).optional(),
   summary: z.lazy(() => SortOrderSchema).optional(),
   deadline: z.union([ z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -183,6 +189,7 @@ export const GoalScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.GoalScal
   OR: z.lazy(() => GoalScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => GoalScalarWhereWithAggregatesInputSchema), z.lazy(() => GoalScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
   title: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
   summary: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
   deadline: z.union([ z.lazy(() => DateTimeNullableWithAggregatesFilterSchema), z.coerce.date() ]).optional().nullable(),
@@ -265,6 +272,7 @@ export const TaskScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.TaskScal
 
 export const GoalCreateInputSchema: z.ZodType<Prisma.GoalCreateInput> = z.strictObject({
   id: z.uuid().optional(),
+  userId: z.string(),
   title: z.string(),
   summary: z.string(),
   deadline: z.coerce.date().optional().nullable(),
@@ -275,6 +283,7 @@ export const GoalCreateInputSchema: z.ZodType<Prisma.GoalCreateInput> = z.strict
 
 export const GoalUncheckedCreateInputSchema: z.ZodType<Prisma.GoalUncheckedCreateInput> = z.strictObject({
   id: z.uuid().optional(),
+  userId: z.string(),
   title: z.string(),
   summary: z.string(),
   deadline: z.coerce.date().optional().nullable(),
@@ -285,6 +294,7 @@ export const GoalUncheckedCreateInputSchema: z.ZodType<Prisma.GoalUncheckedCreat
 
 export const GoalUpdateInputSchema: z.ZodType<Prisma.GoalUpdateInput> = z.strictObject({
   id: z.union([ z.uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   summary: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deadline: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -295,6 +305,7 @@ export const GoalUpdateInputSchema: z.ZodType<Prisma.GoalUpdateInput> = z.strict
 
 export const GoalUncheckedUpdateInputSchema: z.ZodType<Prisma.GoalUncheckedUpdateInput> = z.strictObject({
   id: z.union([ z.uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   summary: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deadline: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -305,6 +316,7 @@ export const GoalUncheckedUpdateInputSchema: z.ZodType<Prisma.GoalUncheckedUpdat
 
 export const GoalCreateManyInputSchema: z.ZodType<Prisma.GoalCreateManyInput> = z.strictObject({
   id: z.uuid().optional(),
+  userId: z.string(),
   title: z.string(),
   summary: z.string(),
   deadline: z.coerce.date().optional().nullable(),
@@ -314,6 +326,7 @@ export const GoalCreateManyInputSchema: z.ZodType<Prisma.GoalCreateManyInput> = 
 
 export const GoalUpdateManyMutationInputSchema: z.ZodType<Prisma.GoalUpdateManyMutationInput> = z.strictObject({
   id: z.union([ z.uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   summary: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deadline: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -323,6 +336,7 @@ export const GoalUpdateManyMutationInputSchema: z.ZodType<Prisma.GoalUpdateManyM
 
 export const GoalUncheckedUpdateManyInputSchema: z.ZodType<Prisma.GoalUncheckedUpdateManyInput> = z.strictObject({
   id: z.union([ z.uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   summary: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deadline: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -460,6 +474,7 @@ export const TaskOrderByRelationAggregateInputSchema: z.ZodType<Prisma.TaskOrder
 
 export const GoalCountOrderByAggregateInputSchema: z.ZodType<Prisma.GoalCountOrderByAggregateInput> = z.strictObject({
   id: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   title: z.lazy(() => SortOrderSchema).optional(),
   summary: z.lazy(() => SortOrderSchema).optional(),
   deadline: z.lazy(() => SortOrderSchema).optional(),
@@ -469,6 +484,7 @@ export const GoalCountOrderByAggregateInputSchema: z.ZodType<Prisma.GoalCountOrd
 
 export const GoalMaxOrderByAggregateInputSchema: z.ZodType<Prisma.GoalMaxOrderByAggregateInput> = z.strictObject({
   id: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   title: z.lazy(() => SortOrderSchema).optional(),
   summary: z.lazy(() => SortOrderSchema).optional(),
   deadline: z.lazy(() => SortOrderSchema).optional(),
@@ -478,6 +494,7 @@ export const GoalMaxOrderByAggregateInputSchema: z.ZodType<Prisma.GoalMaxOrderBy
 
 export const GoalMinOrderByAggregateInputSchema: z.ZodType<Prisma.GoalMinOrderByAggregateInput> = z.strictObject({
   id: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   title: z.lazy(() => SortOrderSchema).optional(),
   summary: z.lazy(() => SortOrderSchema).optional(),
   deadline: z.lazy(() => SortOrderSchema).optional(),
@@ -908,6 +925,7 @@ export const TaskScalarWhereInputSchema: z.ZodType<Prisma.TaskScalarWhereInput> 
 
 export const GoalCreateWithoutTasksInputSchema: z.ZodType<Prisma.GoalCreateWithoutTasksInput> = z.strictObject({
   id: z.uuid().optional(),
+  userId: z.string(),
   title: z.string(),
   summary: z.string(),
   deadline: z.coerce.date().optional().nullable(),
@@ -917,6 +935,7 @@ export const GoalCreateWithoutTasksInputSchema: z.ZodType<Prisma.GoalCreateWitho
 
 export const GoalUncheckedCreateWithoutTasksInputSchema: z.ZodType<Prisma.GoalUncheckedCreateWithoutTasksInput> = z.strictObject({
   id: z.uuid().optional(),
+  userId: z.string(),
   title: z.string(),
   summary: z.string(),
   deadline: z.coerce.date().optional().nullable(),
@@ -942,6 +961,7 @@ export const GoalUpdateToOneWithWhereWithoutTasksInputSchema: z.ZodType<Prisma.G
 
 export const GoalUpdateWithoutTasksInputSchema: z.ZodType<Prisma.GoalUpdateWithoutTasksInput> = z.strictObject({
   id: z.union([ z.uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   summary: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deadline: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -951,6 +971,7 @@ export const GoalUpdateWithoutTasksInputSchema: z.ZodType<Prisma.GoalUpdateWitho
 
 export const GoalUncheckedUpdateWithoutTasksInputSchema: z.ZodType<Prisma.GoalUncheckedUpdateWithoutTasksInput> = z.strictObject({
   id: z.union([ z.uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   title: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   summary: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   deadline: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
