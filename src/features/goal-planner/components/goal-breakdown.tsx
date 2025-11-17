@@ -1,13 +1,25 @@
 "use client";
 
-import { IconListCheck, IconLoader2 } from "@tabler/icons-react";
+import { IconListCheck } from "@tabler/icons-react";
 
 import { TaskCard } from "@/features/goal-planner/components/task-card";
 import { useGoalPlanner } from "@/components/providers/goal-planner-provider";
 import { Goal } from "../index";
-import { Alert, AlertTitle } from "@/components/ui/alert";
-import { AlertCircleIcon } from "lucide-react";
 import { StreamMessage } from "@/types";
+import {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+  StreamingState,
+} from "./view-states";
+
+type GoalBreakdownContentProps = {
+  isPending: boolean;
+  hasMessages: boolean;
+  streamMessages: StreamMessage<Goal>[];
+  errorMessage: string | null;
+  goal: Goal | null;
+};
 
 export function GoalBreakdown() {
   const { streamMessages, errorMessage, isPending, goal } = useGoalPlanner();
@@ -27,20 +39,12 @@ export function GoalBreakdown() {
           hasMessages,
           streamMessages,
           errorMessage,
-          goal
+          goal,
         })}
       </div>
     </div>
   );
 }
-
-type GoalBreakdownContentProps = {
-  isPending: boolean;
-  hasMessages: boolean;
-  streamMessages: StreamMessage<Goal>[];
-  errorMessage: string | null;
-  goal: Goal | null;
-};
 
 function renderContent({
   isPending,
@@ -70,60 +74,15 @@ function renderContent({
   return <EmptyState />;
 }
 
-function EmptyState() {
-  return (
-    <p className="text-sm text-muted-foreground">
-      Plan preview will appear here once you generate a goal.
-    </p>
-  );
-}
-
-function LoadingState() {
-  return (
-    <div className="flex items-center gap-3 text-muted-foreground">
-      <IconLoader2 className="size-4 animate-spin text-primary" />
-      <span>Generating your goal plan…</span>
-    </div>
-  );
-}
-
-function StreamingState({
-  streamMessages,
-  isPending,
-}: {
-  streamMessages: StreamMessage<Goal>[];
-  isPending: boolean;
-}) {
-  const latestMessage = streamMessages
-    .filter((message) => message.status !== "complete")
-    .at(-1); // last message
-
-  return (
-    <div className="space-y-3">
-      {isPending && (
-        <p className="text-xs font-medium text-primary">Streaming live…</p>
-      )}
-
-      <div className="rounded-lg border bg-background/80 p-3 shadow-inner">
-        {latestMessage ? (
-          <div className="animate-pulse rounded-md bg-muted/40 px-3 py-2">
-            <p className="text-sm font-mono text-muted-foreground">
-              {latestMessage.text}
-            </p>
-          </div>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            Preparing first steps…
-          </p>
-        )}
-      </div>
-    </div>
-  );
-}
-
-
-
 function CompletedPlanView({ goal }: { goal: Goal }) {
+  const { updateTask } = useGoalPlanner();
+
+  const handleTitleChange = (taskId: string, value: string) =>
+    updateTask(taskId, "title", value);
+
+  const handleDescriptionChange = (taskId: string, value: string) =>
+    updateTask(taskId, "description", value);
+
   return (
     <div className="space-y-4">
       <div>
@@ -136,22 +95,16 @@ function CompletedPlanView({ goal }: { goal: Goal }) {
           <TaskCard
             key={`${task.title}-${index}`}
             index={index}
+            id={task.id}
             title={task.title}
             description={task.description}
             dueDate={task.dueDate}
             status={task.status}
+            onChangeTitle={handleTitleChange}
+            onChangeDescription={handleDescriptionChange}
           />
         ))}
       </div>
     </div>
-  );
-}
-
-function ErrorState({ message }: { message: string }) {
-  return (
-    <Alert variant="destructive">
-      <AlertCircleIcon />
-      <AlertTitle>{message}</AlertTitle>
-    </Alert>
   );
 }

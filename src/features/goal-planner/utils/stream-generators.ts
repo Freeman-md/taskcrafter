@@ -1,4 +1,4 @@
-import { createStreamHelpers } from "@/lib/streaming/helpers"
+import { createStreamHelpers } from "@/lib/streaming/create-stream-helpers"
 import { Stream } from "openai/core/streaming.mjs";
 import { ResponseStreamEvent } from "openai/resources/responses/responses.mjs";
 import { Goal } from "../types";

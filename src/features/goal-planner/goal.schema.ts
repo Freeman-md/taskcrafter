@@ -25,6 +25,7 @@ export const GoalInputSchema = z.object({
 })
 
 export const TaskSchema = z.object({
+    id: z.string(),
     title: z.string(),
     description: z.string().nullable().optional(),
     dueDate: z.iso.datetime().nullable().optional(),

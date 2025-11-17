@@ -3,21 +3,30 @@
 import { IconCheck, IconCircle } from "@tabler/icons-react";
 
 import { cn } from "@/lib/utils/cn";
+import { formatDate } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 type TaskCardProps = {
   index: number;
+  id: string;
   title: string;
   description?: string | null;
   dueDate?: string | null;
   status: "pending" | "completed";
+  onChangeTitle: (id: string, title: string) => void;
+  onChangeDescription: (id: string, description: string) => void;
 };
 
 export function TaskCard({
   index,
+  id,
   title,
   description,
   dueDate,
   status,
+  onChangeTitle,
+  onChangeDescription,
 }: TaskCardProps) {
   const isCompleted = status === "completed";
   const formattedDate = formatDate(dueDate);
@@ -30,16 +39,19 @@ export function TaskCard({
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-1 items-center gap-3">
           <span className="flex size-7 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
             {index + 1}
           </span>
-          <div>
-            <p className="text-sm font-semibold text-foreground">{title}</p>
+          <div className="flex-1">
+            <Input
+              variant="plain_text"
+              defaultValue={title}
+              className="w-full"
+              onBlur={(e) => onChangeTitle?.(id, e.target.value)}
+            />
             {formattedDate && (
-              <p className="text-xs text-muted-foreground">
-                Due {formattedDate}
-              </p>
+              <p className="text-xs text-muted-foreground">{formattedDate}</p>
             )}
           </div>
         </div>
@@ -51,20 +63,13 @@ export function TaskCard({
       </div>
 
       {description && (
-        <p className="mt-3 text-sm text-muted-foreground">{description}</p>
+        <Textarea
+          variant="plain_text"
+          className="mt-3 text-sm text-muted-foreground"
+          defaultValue={description}
+          onBlur={(e) => onChangeDescription?.(id, e.target.value)}
+        />
       )}
     </div>
   );
-}
-
-function formatDate(value?: string | null) {
-  if (!value) return null;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return null;
-
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(date);
 }
