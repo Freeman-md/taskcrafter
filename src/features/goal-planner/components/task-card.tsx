@@ -2,8 +2,8 @@
 
 import { IconCheck, IconCircle } from "@tabler/icons-react";
 
-import { cn } from "@/lib/utils/cn";
-import { formatDate } from "@/lib/utils";
+import { cn } from "@/lib/cn";
+import { formatDate } from "@/lib/format-date";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
