@@ -2,8 +2,8 @@
 import { FieldErrors, StreamMessage } from "@/types"
 import { FormEvent } from "react"
 import z from 'zod'
-import { AIGoalInputSchema } from "./schemas"
 import { Goal, Task } from "../../../prisma/generated/zod"
+import { AIGoalInputSchema } from "./schemas/ai-schema"
 
 export type GoalWithTasks = Goal & {
   tasks: Task[]

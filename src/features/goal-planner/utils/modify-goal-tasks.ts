@@ -1,11 +1,14 @@
 import { GoalWithTasks } from "../types";
-import { v4 as uuidv4 } from 'uuid';
 
 
 export const modifyGoalTasks = (goal: GoalWithTasks) => {
+    const goalId = goal.id ?? crypto.randomUUID()
+
+    goal.id = goalId
+
     goal.tasks = goal.tasks.map((task) => ({
         ...task,
-        id: uuidv4()
+        id: task.id ?? crypto.randomUUID()
     }))
 
     return goal

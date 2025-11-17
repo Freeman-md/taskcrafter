@@ -1,5 +1,5 @@
-import { AIGoalInputSchema } from "@/features/goal-planner/schemas"
-import { createGoalPlan } from "@/features/goal-planner/ai/ai"
+import { createGoalPlan } from "@/features/goal-planner/ai/create-goal-plan"
+import { AIGoalInputSchema } from "@/features/goal-planner/schemas/ai-schema"
 import { withApiErrorHandling, ValidationApiError } from "@/lib/api"
 import { validateRequest } from "@/lib/validation"
 

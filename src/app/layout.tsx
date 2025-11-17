@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Source_Sans_3, Saira } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/components/providers/app-providers";
+import { Toaster } from "@/components/ui/sonner";
 
 const sourceSans = Source_Sans_3({
   variable: "--font-source-sans",
@@ -29,6 +30,8 @@ export default function RootLayout({
         className={`${sourceSans.className} ${saira.variable} antialiased`}
       >
         <AppProviders>{children}</AppProviders>
+
+        <Toaster />
       </body>
     </html>
   );

@@ -28,8 +28,10 @@ export const AIGoalInputSchema = z.object({
 export const AITaskSchema = TaskSchema.pick({
   title: true,
   description: true,
-  dueDate: true,
+  deadline: true,
   status: true,
+}).extend({
+  deadline: z.string().nullable()
 });
 
 export const AIGoalOutputSchema = GoalSchema.pick({

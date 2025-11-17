@@ -1,7 +1,7 @@
 import { createStreamHelpers } from "@/lib/streaming/create-stream-helpers"
 import { Stream } from "openai/core/streaming.mjs";
 import { ResponseStreamEvent } from "openai/resources/responses/responses.mjs";
-import { Goal } from "../../../../../prisma/generated/zod";
+import { GoalWithTasks } from "../../types";
 
 
 export const createGoalPlanReadableStream = (response: Stream<ResponseStreamEvent> & {
@@ -9,7 +9,7 @@ export const createGoalPlanReadableStream = (response: Stream<ResponseStreamEven
 }) => {
     return new ReadableStream({
         async start(controller) {
-            const { send } = createStreamHelpers<Goal>(controller)
+            const { send } = createStreamHelpers<GoalWithTasks>(controller)
 
             let finalText = ""
 

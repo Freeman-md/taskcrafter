@@ -5,14 +5,14 @@ import { IconCheck, IconCircle } from "@tabler/icons-react";
 import { cn } from "@/lib/cn";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { formatDate } from "@/lib/format-date";
+import { formatDate } from "@/lib/date/format-date";
 
 type TaskCardProps = {
   index: number;
   id: string;
   title: string;
   description?: string | null;
-  dueDate?: Date | null;
+  deadline?: string | Date | null;
   status: "pending" | "completed";
   onChangeTitle: (id: string, title: string) => void;
   onChangeDescription: (id: string, description: string) => void;
@@ -23,13 +23,13 @@ export function TaskCard({
   id,
   title,
   description,
-  dueDate,
+  deadline,
   status,
   onChangeTitle,
   onChangeDescription,
 }: TaskCardProps) {
   const isCompleted = status === "completed";
-  const formattedDate = formatDate(dueDate);
+  const formattedDate = formatDate(deadline);
 
   return (
     <div

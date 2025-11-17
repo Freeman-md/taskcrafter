@@ -2,17 +2,16 @@
 
 import { IconListCheck } from "@tabler/icons-react";
 
-import { TaskCard } from "@/features/goal-planner/components/task-card";
 import { useGoalPlanner } from "@/components/providers/goal-planner-provider";
 import { StreamMessage } from "@/types";
+import { GoalWithTasks } from "../types";
+import CompletedPlanView from "./completed-plan-view";
 import {
   EmptyState,
   ErrorState,
   LoadingState,
   StreamingState,
 } from "./view-states";
-import { GoalWithTasks } from "../types";
-
 
 type GoalBreakdownContentProps = {
   isPending: boolean;
@@ -75,37 +74,3 @@ function renderContent({
   return <EmptyState />;
 }
 
-function CompletedPlanView({ goal }: { goal: GoalWithTasks }) {
-  const { updateTask } = useGoalPlanner();
-
-  const handleTitleChange = (taskId: string, value: string) =>
-    updateTask(taskId, "title", value);
-
-  const handleDescriptionChange = (taskId: string, value: string) =>
-    updateTask(taskId, "description", value);
-
-  return (
-    <div className="space-y-4">
-      <div>
-        <p className="text-base font-semibold text-foreground">{goal.title}</p>
-        <p className="mt-1 text-sm text-muted-foreground">{goal.summary}</p>
-      </div>
-
-      <div className="space-y-3">
-        {goal.tasks.map((task, index) => (
-          <TaskCard
-            key={`${task.title}-${index}`}
-            index={index}
-            id={task.id}
-            title={task.title}
-            description={task.description}
-            dueDate={task.dueDate}
-            status={task.status}
-            onChangeTitle={handleTitleChange}
-            onChangeDescription={handleDescriptionChange}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}

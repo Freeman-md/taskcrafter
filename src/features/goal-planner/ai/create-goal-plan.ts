@@ -1,11 +1,12 @@
 import 'server-only'
 
 import { openai } from "@/lib/openai"
-import { GoalInput } from "../types"
 import { zodTextFormat } from "openai/helpers/zod.mjs"
-import { AIGoalOutputSchema } from "../schemas"
+
+import { GoalInput } from "../types"
 import { createGoalPlanReadableStream } from "../utils/streaming/create-goal-plan-readable-stream"
 import { buildGoalPlanMessages } from '../utils/streaming/prompt-generators'
+import { AIGoalOutputSchema } from '../schemas/ai-schema'
 
 export async function createGoalPlan(input: GoalInput) {
     const messages = buildGoalPlanMessages(input)
