@@ -16,7 +16,7 @@ const textareaVariants = cva("", {
         "placeholder:text-muted-foreground",
         "selection:bg-primary selection:text-primary-foreground",
         "focus-visible:ring-0 focus-visible:border-none",
-        "resize-none rows-3"
+        "rows-3"
       ),
     },
   },
