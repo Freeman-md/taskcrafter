@@ -18,7 +18,7 @@ export type GoalPlannerContextValue = {
   fieldErrors: FieldErrors<GoalFormData>
   streamMessages: StreamMessage<GoalWithTasks>[]
   errorMessage: string | null
-  isPending: boolean
+  isGeneratingTasks: boolean
   goal: GoalWithTasks | null
   updateFormField: (field: keyof GoalFormData, value: string) => void
   updateTask: (taskId: string, field: "title" | "description", value: string) => void

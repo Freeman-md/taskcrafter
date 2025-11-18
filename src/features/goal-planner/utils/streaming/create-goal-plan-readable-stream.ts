@@ -75,6 +75,8 @@ export const createGoalPlanReadableStream = (response: Stream<ResponseStreamEven
                         break
                 }
             }
+
+            controller.close()
         }
     })
 }

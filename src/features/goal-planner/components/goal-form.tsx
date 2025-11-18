@@ -16,7 +16,7 @@ export function GoalForm() {
     clearForm,
     handleSubmit,
     fieldErrors,
-    isPending,
+    isGeneratingTasks,
   } = useGoalPlanner();
 
   return (
@@ -36,7 +36,7 @@ export function GoalForm() {
               onChange={(event) => updateFormField("title", event.target.value)}
               placeholder="Enter your goal..."
               required
-              disabled={isPending}
+              disabled={isGeneratingTasks}
             />
           </Field>
 
@@ -52,7 +52,7 @@ export function GoalForm() {
               onChange={(event) =>
                 updateFormField("deadline", event.target.value)
               }
-              disabled={isPending}
+              disabled={isGeneratingTasks}
             />
           </Field>
 
@@ -69,21 +69,21 @@ export function GoalForm() {
               }
               placeholder="Provide additional context or requirements..."
               rows={5}
-              disabled={isPending}
+              disabled={isGeneratingTasks}
             />
           </Field>
 
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
-            <Button type="submit" disabled={isPending} className="flex-1">
+            <Button type="submit" disabled={isGeneratingTasks} className="flex-1">
               <IconSparkles className="mr-2 size-4" />
-              {isPending ? "Generating..." : "Generate Plan"}
+              {isGeneratingTasks ? "Generating..." : "Generate Plan"}
             </Button>
 
             <Button
               type="button"
               variant="outline"
               onClick={clearForm}
-              disabled={isPending}
+              disabled={isGeneratingTasks}
             >
               Clear
             </Button>

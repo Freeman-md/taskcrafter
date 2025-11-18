@@ -14,7 +14,7 @@ import {
 } from "./view-states";
 
 type GoalBreakdownContentProps = {
-  isPending: boolean;
+  isGeneratingTasks: boolean;
   hasMessages: boolean;
   streamMessages: StreamMessage<GoalWithTasks>[];
   errorMessage: string | null;
@@ -22,7 +22,7 @@ type GoalBreakdownContentProps = {
 };
 
 export function GoalBreakdown() {
-  const { streamMessages, errorMessage, isPending, goal } = useGoalPlanner();
+  const { streamMessages, errorMessage, isGeneratingTasks, goal } = useGoalPlanner();
 
   const hasMessages = streamMessages.length > 0;
 
@@ -35,7 +35,7 @@ export function GoalBreakdown() {
 
       <div className="mt-3 text-sm text-muted-foreground/90">
         {renderContent({
-          isPending,
+          isGeneratingTasks,
           hasMessages,
           streamMessages,
           errorMessage,
@@ -47,7 +47,7 @@ export function GoalBreakdown() {
 }
 
 function renderContent({
-  isPending,
+  isGeneratingTasks,
   hasMessages,
   streamMessages,
   errorMessage,
@@ -61,13 +61,13 @@ function renderContent({
     return <CompletedPlanView goal={goal} />;
   }
 
-  if (isPending && !hasMessages) {
+  if (isGeneratingTasks && !hasMessages) {
     return <LoadingState />;
   }
 
   if (hasMessages) {
     return (
-      <StreamingState streamMessages={streamMessages} isPending={isPending} />
+      <StreamingState streamMessages={streamMessages} isGeneratingTasks={isGeneratingTasks} />
     );
   }
 

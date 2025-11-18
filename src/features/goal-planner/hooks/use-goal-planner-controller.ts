@@ -1,13 +1,12 @@
 "use client"
 
-import { useCallback, useMemo, useState, useTransition, type FormEvent } from "react"
+import { useCallback, useMemo, useState, type FormEvent } from "react"
 
 import { FieldErrors, StreamMessage, ValidationErrorResponse } from "@/types"
 import { GoalFormData, GoalPlannerContextValue, GoalWithTasks } from "../types"
 import { VALIDATION_ERROR } from "@/constants"
 import { formatErrors } from "@/lib/validation"
 import { modifyGoalTasks } from "../utils/modify-goal-tasks"
-
 
 
 export function useGoalPlannerController(): GoalPlannerContextValue {
@@ -20,7 +19,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
   const [streamMessages, setStreamMessages] = useState<StreamMessage<GoalWithTasks>[]>([])
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [goal, setGoal] = useState<GoalWithTasks | null>(null)
-  const [isPending, startTransition] = useTransition()
+  const [isGeneratingTasks, setIsGeneratingTasks] = useState(false)
 
   const updateFormField = useCallback((field: keyof GoalFormData, value: string) => {
     setFormData((previous: GoalFormData) => ({ ...previous, [field]: value }))
@@ -63,6 +62,8 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
   )
 
   const readStream = useCallback(async (stream: ReadableStream<Uint8Array>) => {
+    console.log("readStream: start")
+
     const reader = stream.getReader()
     const textDecoder = new TextDecoder()
 
@@ -70,8 +71,12 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
     let bufferedText = ""
 
     while (true) {
+
       const { done, value } = await reader.read()
-      if (done) break
+
+      if (done) {
+        break
+      }
 
       bufferedText += textDecoder.decode(value, { stream: true })
 
@@ -103,6 +108,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
       }
     }
 
+
     // Handle any leftover data after the stream ends
     const remainingMessags = bufferedText.trim()
     if (remainingMessags) {
@@ -117,43 +123,45 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
 
 
   const handleSubmit = useCallback(
-    (event: FormEvent<HTMLFormElement>) => {
+    async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault()
 
       clearData()
 
-      startTransition(async () => {
-        try {
-          const response = await fetch("/api/goal/create-plan", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              title: formData.title,
-              deadline: formData.deadline,
-              context: formData.context,
-            }),
-          })
+      setIsGeneratingTasks(true)
 
-          if (!response.ok || !response.body) {
-            const data = await response.json() as ValidationErrorResponse
+      try {
+        const response = await fetch("/api/goal/create-plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: formData.title,
+            deadline: formData.deadline,
+            context: formData.context,
+          }),
+        })
 
-            if (data.error === VALIDATION_ERROR && data.details?.issues) {
-              const formattedErrors = formatErrors(data.details.issues)
+        if (!response.ok || !response.body) {
+          const data = await response.json() as ValidationErrorResponse
 
-              setFieldErrors(formattedErrors)
-              return
-            }
+          if (data.error === VALIDATION_ERROR && data.details?.issues) {
+            const formattedErrors = formatErrors(data.details.issues)
 
-            setErrorMessage(data.message ?? "Plan generation failed.")
+            setFieldErrors(formattedErrors)
             return
           }
 
-          await readStream(response.body)
-        } catch (error) {
-          console.error("Goal planner submission failed:", error)
-          setErrorMessage("Unexpected error while generating the plan.")
+          setErrorMessage(data.message ?? "Plan generation failed.")
+          return
         }
-      })
+
+        await readStream(response.body)
+      } catch (error) {
+        console.error("Goal planner submission failed:", error)
+        setErrorMessage("Unexpected error while generating the plan.")
+      } finally {
+        setIsGeneratingTasks(false)
+      }
     },
     [formData, readStream, clearData],
   )
@@ -164,7 +172,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
       fieldErrors,
       streamMessages,
       errorMessage,
-      isPending,
+      isGeneratingTasks,
       goal,
       updateTask,
       updateFormField,
@@ -176,7 +184,7 @@ export function useGoalPlannerController(): GoalPlannerContextValue {
       fieldErrors,
       streamMessages,
       errorMessage,
-      isPending,
+      isGeneratingTasks,
       goal,
       updateTask,
       updateFormField,

@@ -6,10 +6,10 @@ import { AlertCircleIcon } from "lucide-react";
 
 export function StreamingState({
   streamMessages,
-  isPending,
+  isGeneratingTasks,
 }: {
   streamMessages: StreamMessage<GoalWithTasks>[];
-  isPending: boolean;
+  isGeneratingTasks: boolean;
 }) {
   const latestMessage = streamMessages
     .filter((message) => message.status !== "complete")
@@ -17,7 +17,7 @@ export function StreamingState({
 
   return (
     <div className="space-y-3">
-      {isPending && (
+      {isGeneratingTasks && (
         <p className="text-xs font-medium text-primary">Streaming live…</p>
       )}
 
