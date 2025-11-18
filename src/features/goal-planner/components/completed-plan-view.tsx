@@ -1,7 +1,6 @@
 "use client";
 
 import { useGoalPlanner } from "@/components/providers/goal-planner-provider";
-import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/date";
 import {
   Accordion,
@@ -9,17 +8,26 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useState, useTransition } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { saveGoalAction } from "../actions/save-goal";
+import { saveGoalAction, SaveGoalResponse } from "../actions/save-goal";
 import { GoalWithTasks } from "../types";
 import { TaskCard } from "./task-card";
 import { Badge } from "@/components/ui/badge";
+import { SubmitButton } from "@/components/ui/submit-button";
+
+const initialState: SaveGoalResponse = {
+  success: true,
+  goalId: "",
+};
 
 export default function CompletedPlanView({ goal }: { goal: GoalWithTasks }) {
   const { updateTask } = useGoalPlanner();
-  const [isSaving, startSaving] = useTransition();
   const [openValue, setOpenValue] = useState(goal.title);
+  const [state, formAction] = useActionState(
+    saveGoalAction.bind(null, goal),
+    initialState
+  );
 
   const handleTitleChange = (taskId: string, value: string) =>
     updateTask(taskId, "title", value);
@@ -27,22 +35,13 @@ export default function CompletedPlanView({ goal }: { goal: GoalWithTasks }) {
   const handleDescriptionChange = (taskId: string, value: string) =>
     updateTask(taskId, "description", value);
 
-  const handleSavePlan = () =>
-    startSaving(async () => {
-      try {
-        const result = await saveGoalAction(goal);
-
-        if (!result.success) {
-          toast.error(result.error);
-          return;
-        }
-
-        toast.success("Plan saved successfully.");
-      } catch (err) {
-        console.error("Client transition error:", err);
-        toast.error("Something went wrong on the client.");
-      }
-    });
+  useEffect(() => {
+    if (state.success === false && state.error) {
+      toast.error(state.error ?? "Plan was not saved");
+    } else if (state.success === true && state.goalId) {
+      toast.success("Plan saved successfully.");
+    }
+  }, [state]);
 
   return (
     <div className="space-y-4">
@@ -112,16 +111,9 @@ export default function CompletedPlanView({ goal }: { goal: GoalWithTasks }) {
         </AccordionItem>
       </Accordion>
 
-      <div className="pt-2">
-        <Button
-          variant="default"
-          onClick={handleSavePlan}
-          disabled={isSaving || !goal.tasks.length}
-          className="w-full sm:w-auto"
-        >
-          {isSaving ? "Saving..." : "Save Plan"}
-        </Button>
-      </div>
+      <form action={formAction} className="pt-2">
+        <SubmitButton pendingText="Saving" defaultText="Save Plan" />
+      </form>
     </div>
   );
 }
