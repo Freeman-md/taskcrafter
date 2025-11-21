@@ -8,13 +8,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { saveGoalAction, SaveGoalResponse } from "../actions/save-goal";
 import { GoalWithTasks } from "../types";
 import { TaskCard } from "./task-card";
 import { Badge } from "@/components/ui/badge";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { usePathname, useRouter } from "next/navigation";
 
 const initialState: SaveGoalResponse = {
   success: true,
@@ -28,6 +29,8 @@ export default function CompletedPlanView({ goal }: { goal: GoalWithTasks }) {
     saveGoalAction.bind(null, goal),
     initialState
   );
+  const router = useRouter()
+  const pathname = usePathname()
 
   const handleTitleChange = (taskId: string, value: string) =>
     updateTask(taskId, "title", value);
@@ -40,8 +43,13 @@ export default function CompletedPlanView({ goal }: { goal: GoalWithTasks }) {
       toast.error(state.error ?? "Plan was not saved");
     } else if (state.success === true && state.goalId) {
       toast.success("Plan saved successfully.");
+
+      if (pathname === "/goal-planner") {
+      router.push(`/goals/${state.goalId}`)
     }
-  }, [state]);
+    }
+  }, [state, pathname, router]);
+
 
   return (
     <div className="space-y-4">

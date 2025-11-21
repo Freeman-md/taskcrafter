@@ -27,19 +27,9 @@ const navigationItems: NavigationItem[] = [
     icon: IconTargetArrow,
   },
   {
-    title: "Plan Details",
-    url: "/plan-details",
+    title: "Goals",
+    url: "/goals",
     icon: IconListDetails,
-  },
-  {
-    title: "JSON Viewer",
-    url: "/json-viewer",
-    icon: IconCode,
-  },
-  {
-    title: "Activity & Logs",
-    url: "/activity",
-    icon: IconActivity,
   },
 ]
 
@@ -54,53 +44,45 @@ const pageInfo: Record<
     title: "Dashboard",
     subtitle: "Track goals, progress, and the latest activity",
   },
-  "/goal-planner": {
-    title: "Goal Planner",
-    subtitle: "Create structured plans with AI assistance",
+  "/goals": {
+    title: "Goals",
+    subtitle: "Review all your goals",
   },
-  "/plan-details": {
-    title: "Plan Details",
-    subtitle: "Review AI-generated plans at a glance",
-  },
-  "/json-viewer": {
-    title: "JSON Viewer",
-    subtitle: "Inspect the raw plan responses and debug fast",
-  },
-  "/activity": {
-    title: "Activity & Logs",
-    subtitle: "Review the latest progress and updates",
+  "/goals/[id]": {
+    title: "Goal Details",
+    subtitle: "View the full plan for this goal",
   },
 }
 
-function getActiveSegment(path: string | null) {
-  if (!path) return "/"
-  const [cleanPath] = path.split("?")
-  const segments = cleanPath.split("/").filter(Boolean)
-  const last = segments.at(-1)?.toLowerCase()
-  return last ? `/${last}` : "/"
+function getActiveKey(path: string | null) {
+  if (!path) return "/";
+
+  if (path.startsWith("/goals/") && path !== "/goals") {
+    return "/goals/[id]";
+  }
+
+  return path;
 }
+
 
 export function useNavigation() {
   const pathname = usePathname()
 
-  const activeSegment = useMemo(() => getActiveSegment(pathname), [pathname])
+  const activeKey = useMemo(() => getActiveKey(pathname), [pathname]);
 
-  const { title, subtitle } = useMemo(() => {
-    const entry = pageInfo[activeSegment] ?? pageInfo[pathname ?? ""] ?? pageInfo["/"] ?? {}
-    return {
-      title: entry?.title ?? "",
-      subtitle: entry?.subtitle ?? "",
-    }
-  }, [activeSegment, pathname])
+  const { title, subtitle } = pageInfo[activeKey] ?? pageInfo["/"];
 
   const isActive = useCallback(
-    (url: string) => getActiveSegment(url) === activeSegment,
-    [activeSegment],
-  )
+    (url: string) => {
+      const key = getActiveKey(url);
+      return key === activeKey;
+    },
+    [activeKey]
+  );
 
   return {
     items: navigationItems,
-    activeSegment,
+    activeKey,
     pageTitle: title,
     pageSubtitle: subtitle,
     isActive,
