@@ -1,6 +1,6 @@
 import { GoalPlannerProvider } from "@/components/providers/goal-planner-provider";
-import { GoalBreakdown } from "@/features/goal-planner/components/goal-breakdown";
-import { GoalForm } from "@/features/goal-planner/components/goal-form";
+import { GoalBreakdown } from "@/features/goals/components/goal-breakdown";
+import { GoalForm } from "@/features/goals/components/goal-form";
 
 export default function GoalPlanner() {
   return (

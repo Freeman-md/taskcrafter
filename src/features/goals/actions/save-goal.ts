@@ -4,6 +4,7 @@ import { currentUser } from "@clerk/nextjs/server"
 import { saveGoal } from "../db/save-goal"
 import { GoalWithTasks } from "../types"
 import { mapGoalToDb } from "../mappers/map-to-db-records"
+import { revalidatePath } from "next/cache"
 
 export type SaveGoalResponse =
   | { success: true; goalId: string }
@@ -24,6 +25,8 @@ export async function saveGoalAction(goal: GoalWithTasks | null): Promise<SaveGo
     const { goalRecord, taskRecords } = mapGoalToDb(user.id, goal)
 
     const savedGoal = await saveGoal(user.id, goalRecord, taskRecords)
+
+    revalidatePath("/goals")
 
     return { success: true, goalId: savedGoal.id }
   } catch (error) {

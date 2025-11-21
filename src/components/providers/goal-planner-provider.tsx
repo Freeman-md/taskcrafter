@@ -1,7 +1,7 @@
 "use client";
 
-import { useGoalPlannerController } from "@/features/goal-planner/hooks/use-goal-planner-controller";
-import { GoalPlannerContextValue } from "@/features/goal-planner/types";
+import { useGoalPlannerController } from "@/features/goals/hooks/use-goal-planner-controller";
+import { GoalPlannerContextValue } from "@/features/goals/types";
 import { createContext, useContext, type ReactNode } from "react";
 
 const GoalPlannerContext = createContext<GoalPlannerContextValue | null>(null);

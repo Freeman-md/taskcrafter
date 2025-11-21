@@ -6,12 +6,10 @@ import { useGoalPlanner } from "@/components/providers/goal-planner-provider";
 import { StreamMessage } from "@/types";
 import { GoalWithTasks } from "../types";
 import CompletedPlanView from "./completed-plan-view";
-import {
-  EmptyState,
-  ErrorState,
-  LoadingState,
-  StreamingState,
-} from "./view-states";
+import StreamingState from "../../../components/ui/streaming-state";
+import ErrorState from "@/components/ui/error-state";
+import LoadingState from "@/components/ui/loading-state";
+import EmptyState from "@/components/ui/empty-state";
 
 type GoalBreakdownContentProps = {
   isGeneratingTasks: boolean;
@@ -53,8 +51,14 @@ function renderContent({
   errorMessage,
   goal,
 }: GoalBreakdownContentProps) {
+  
   if (errorMessage) {
-    return <ErrorState message={errorMessage} />;
+    return (
+      <ErrorState 
+        error={new Error(errorMessage)} 
+        title="Goal Generation Failed" 
+      />
+    );
   }
 
   if (goal) {
@@ -62,7 +66,11 @@ function renderContent({
   }
 
   if (isGeneratingTasks && !hasMessages) {
-    return <LoadingState />;
+    return (
+      <LoadingState 
+        message="Generating your goal plan…" 
+      />
+    );
   }
 
   if (hasMessages) {
@@ -71,6 +79,10 @@ function renderContent({
     );
   }
 
-  return <EmptyState />;
+  return (
+    <EmptyState 
+      title="Start Planning" 
+      description="Plan preview will appear here once you generate a goal."
+    />
+  );
 }
-
